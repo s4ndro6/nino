@@ -53,6 +53,7 @@ struct NinoRootView: View {
     }
     @ViewBuilder var workspaceContent:some View {
         switch store.page {
+        case "delivery": DeliveryView(delivery: store.delivery)
         case "privacy": ScrollView { VStack(alignment: .leading, spacing: 24) { Text("Tes données, tes choix.").font(.system(size: 30, weight: .semibold)); UsagePrivacyView(analytics: store.analytics) }.padding(32).frame(maxWidth: 850) }
         case "agent":LocalAgentView(store:store,agent:store.agent)
         case "notes": StickyNotesView(store: store.notes, projects: store.work.state.projects.map { StickyNoteProject(id: $0.id, title: $0.title) }, createProjectID: store.work.current?.id, onOpen: { store.openStickyNote?($0) }, onHideAll: { store.hideStickyNotes?() })
@@ -75,6 +76,7 @@ struct NinoRootView: View {
             VStack(spacing:9) {
                 BrandMark(size:28).padding(.vertical,12)
                 compactNav("home","Mon Nino","house")
+                compactNav("delivery","Vérifier ma livraison","checkmark.seal")
                 compactNav("notes","Post-it","note.text")
                 compactNav("agent","Assistant","sparkles")
                 compactNav("today","Aujourd’hui","sun.max")
@@ -97,6 +99,7 @@ struct NinoRootView: View {
             HStack(spacing: 10) { BrandMark(); VStack(alignment: .leading, spacing: 1) { Text("nino").font(.system(size: 25, weight: .semibold, design: .rounded)); Text("TON COMPAGNON").font(.system(size: 8, weight: .semibold)).tracking(1.6).foregroundStyle(.secondary) } }.padding(.top, 18)
             VStack(spacing: 5) {
                 nav("home", "Mon Nino", "house")
+                nav("delivery", "Ma livraison", "checkmark.seal")
                 nav("notes", "Post-it", "note.text")
                 nav("agent", "Assistant", "sparkles")
                 ForEach(store.profile.navigation, id: \.self) { page in
@@ -285,6 +288,7 @@ struct SettingsPage: View {
                     }.onChange(of: store.companionEnergy) { _, _ in store.saveSettings() }
                     Text("Le profil organise les raccourcis et propose une durée de concentration et une vitesse de lecture. Aucun service externe n’est connecté automatiquement.").font(.caption).foregroundStyle(.secondary)
                 }
+                Section("Mises à jour") { AppUpdatesSettings(updates: store.updates) }
                 Section("Transcription") {
                     Picker("Langue", selection: $store.language) { Text("Français").tag("fr"); Text("Détection automatique").tag("auto"); Text("Anglais").tag("en"); Text("Italien").tag("it"); Text("Espagnol").tag("es") }
                     Picker("Modèle local", selection: $store.model) { Text("Whisper Small · multilingue").tag("ggml-small.bin"); Text("Whisper Base · léger (à fournir)").tag("ggml-base.bin"); Text("Whisper Large Turbo · qualité (à fournir)").tag("ggml-large-v3-turbo.bin") }

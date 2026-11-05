@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.20.0 — 2026-11-05
+
+- Mises à jour : consentement facultatif, contrôle quotidien GitHub, vérification manuelle, alerte dans l’encoche et notes de version.
+- Choix Télécharger / Plus tard (24 h) / Ignorer cette version ; aucune installation ni interruption automatique.
+- Offre persistée et revalidée au redémarrage, liens restreints au dépôt personnel, réponses bornées et tests hors réseau.
+- Signaux MCP dans l’encoche : à traiter, en cours, dernier message et acquittement ; les signaux anciens ne comptent pas comme actifs.
+- Version « À propos » lue depuis le bundle, script de packaging public reproductible, documentation et inspiration Coucou explicitée.
+- Inclut le parcours livraison préparé en 0.19.
+
+## 0.19.0 — incluse dans la distribution 0.20
+
+- Parcours « Ma livraison » : critères éditables par projet, dossiers locaux, contrôles réels de présence, dimensions, durée, poids et piste audio.
+- Rapport détaillé daté, accès Finder et export Markdown ; métadonnées indisponibles explicitement non vérifiées.
+- Encoche contextuelle pour les métiers créatifs, sans interrompre les outils actifs.
+- Annulation, invalidation des résultats périmés, protection des fichiers locaux et tests synthétiques.
+- [Guide du parcours](docs/DELIVERY.md).
+
 ## 0.18.0 — 2026-11-05
 
 - Première distribution publique personnelle sur GitHub, DMG Apple Silicon et guide de premier lancement.

@@ -7,12 +7,12 @@
 Un post-it à garder sous les yeux. Le fil de ton projet. Une pause pour te concentrer.<br>
 Nino s’installe dans l’encoche de ton Mac et accompagne ta journée, à ton rythme.
 
-[![Télécharger Nino pour Mac](docs/assets/download.svg)](https://github.com/s4ndro6/nino/releases/download/v0.18.0/Nino-0.18.0-macOS-arm64.dmg)
+[![Télécharger Nino pour Mac](docs/assets/download.svg)](https://github.com/s4ndro6/nino/releases/download/v0.20.0/Nino-0.20.0-macOS-arm64.dmg)
 
 **Apple Silicon · macOS 15 ou plus · gratuit · MIT**<br>
-Version 0.18.0 — alpha publique, non notariée par Apple.
+Version 0.20.0 — alpha publique, non notariée par Apple.
 
-[Installation](#en-trois-gestes) · [Ce que tu peux faire](#ton-petit-coin-de-bureau) · [Contribuer](CONTRIBUTING.md) · [Signaler un problème](https://github.com/s4ndro6/nino/issues)
+[Le site Nino](https://nino-companion.vercel.app) · [Installation](#en-trois-gestes) · [Ce que tu peux faire](#ton-petit-coin-de-bureau) · [Contribuer](CONTRIBUTING.md) · [Signaler un problème](https://github.com/s4ndro6/nino/issues)
 
 ![Nino marche, observe, grimpe, réfléchit et fait coucou. Aperçu des gestes du composant de l’application.](docs/assets/promenade.gif)
 
@@ -20,7 +20,7 @@ Version 0.18.0 — alpha publique, non notariée par Apple.
 
 ## En trois gestes
 
-1. **[Télécharge le DMG](https://github.com/s4ndro6/nino/releases/download/v0.18.0/Nino-0.18.0-macOS-arm64.dmg)** et ouvre-le.
+1. **[Télécharge le DMG](https://github.com/s4ndro6/nino/releases/download/v0.20.0/Nino-0.20.0-macOS-arm64.dmg)** et ouvre-le.
 2. **Glisse Nino dans Applications**, puis éjecte le disque Nino.
 3. **Ouvre Nino depuis Applications.** Choisis ton profil, ou commence directement avec une note.
 
@@ -28,7 +28,11 @@ Aucun Terminal, abonnement ou compte obligatoire pour commencer. Mac Intel, Wind
 
 > **Premier lancement :** cette alpha n’est pas encore signée avec un certificat Developer ID ni notariée. macOS peut la bloquer. Après avoir essayé de l’ouvrir, consulte **Réglages Système → Confidentialité et sécurité** pour décider d’autoriser cette application. [Procédure officielle Apple](https://support.apple.com/fr-fr/102445). Aucune commande pour désactiver Gatekeeper n’est nécessaire ou fournie. Si macOS signale un logiciel malveillant ou ne propose pas d’exception, ne force pas l’ouverture et ouvre une issue.
 
-Les sommes SHA-256 sont jointes à la [release](https://github.com/s4ndro6/nino/releases/tag/v0.18.0). Déplace l’app avant de configurer le MCP : son chemin doit rester stable.
+Les sommes SHA-256 sont jointes à la [release](https://github.com/s4ndro6/nino/releases/tag/v0.20.0). Déplace l’app avant de configurer le MCP : son chemin doit rester stable.
+
+**Nouveau en 0.20 :** alertes de mise à jour facultatives, signaux des agents dans l’encoche et [contrôle des fichiers à livrer](docs/DELIVERY.md). [Fonctionnement des mises à jour](docs/UPDATES.md).
+
+Déjà sur 0.18 ? Installe 0.20 une première fois depuis ce bouton pour recevoir ensuite les alertes.
 
 ## Ton petit coin de bureau
 
@@ -67,7 +71,7 @@ Les modèles s’adaptent à ton profil. **Nino ne pilote pas directement Photos
 | Google / Gmail | **Non activés dans le téléchargement public.** Le code du connecteur est fourni ; sa configuration éditeur et sa validation publique restent à finaliser. Aucun compte Google n’est requis pour essayer Nino. |
 | Touch Bar | Extension MTMR facultative, configuration manuelle. [Guide Touch Bar](TouchBar/README.md). |
 
-Nino est une **alpha**. L’installation neuve sur tous les Mac, la fiabilité de tous les appels et la justesse de l’IA ne sont pas garanties. [État des vérifications](VALIDATION-0.18.md).
+Nino est une **alpha**. L’installation neuve sur tous les Mac, la fiabilité de tous les appels et la justesse de l’IA ne sont pas garanties. [Vérifications 0.20](VALIDATION-0.20.md) · [Limites de la première distribution](VALIDATION-0.18.md).
 
 ## Tes données restent les tiennes
 

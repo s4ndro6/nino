@@ -10,6 +10,8 @@ import SwiftUI
     }
     @Published private(set) var items: [Item] = []
     var pending: Int { items.filter { !$0.read && $0.event.state != "working" }.count }
+    var activeCount: Int { items.filter { $0.event.state == "working" && !$0.event.stale }.count }
+    var featured: Item? { items.first(where: { !$0.read && $0.event.state != "working" }) ?? items.first(where: { $0.event.state == "working" && !$0.event.stale }) }
     func receive(_ event: WorkActivity, projectTitle: String) {
         guard !items.contains(where: { $0.id == event.id }) else { return }
         // One latest signal per agent/session/project; keep other observed sessions.

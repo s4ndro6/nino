@@ -23,6 +23,7 @@ import AppKit
         else if store.busyID != nil { mode = "transcribe"; title = "Transcription" }
         else if store.summaryBusy || store.assistant.thinking || store.agent.working { mode = "think"; title = "Réflexion locale" }
         else if store.error != nil { mode = "error"; title = "À vérifier" }
+        else if store.delivery.running { mode = "think"; title = "Contrôle local" }
         else if store.notice != nil && store.latestTranscript != nil { mode = "ready"; title = "Texte prêt" }
         else if let event = store.work.activity, store.work.sharing, !event.stale {
             switch event.state {

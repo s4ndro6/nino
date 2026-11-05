@@ -69,7 +69,7 @@ struct OnboardingView: View {
                 case 0: scenes
                 case 1: profiles
                 case 2: connections
-                case 3: UsagePrivacyView(analytics: store.analytics)
+                case 3: VStack(spacing: 16) { UsagePrivacyView(analytics: store.analytics); UpdateConsent(updates: store.updates) }
                 default: summary
                 }
             }.id(step).transition(.opacity.combined(with:.offset(y:reduceMotion ? 0 : 8)))

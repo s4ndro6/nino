@@ -18,6 +18,17 @@ struct WorkspaceView: View {
                 VStack(alignment: .leading, spacing: 28) {
                     header
                     spaceSelector
+                    if !developmentTools {
+                        Button { store.page = "delivery" } label: {
+                            HStack(spacing: 15) {
+                                Image(systemName: "checkmark.seal").font(.system(size: 26, weight: .light)).foregroundStyle(ninoAccent)
+                                VStack(alignment: .leading, spacing: 6) {
+                                    Text("Vérifier ma livraison").font(.system(size: 18, weight: .semibold, design: .rounded))
+                                    Text("Fichiers manquants, dimensions, durée, poids. Des écarts précis avant l’envoi.").font(.system(size: 12)).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
+                                }; Spacer(); Image(systemName: "arrow.up.right")
+                            }.padding(20).frame(maxWidth: .infinity, alignment: .leading).background(ninoAccent.opacity(0.07), in: RoundedRectangle(cornerRadius: 16))
+                        }.buttonStyle(.plain)
+                    }
                     if let issue = work.issue {
                         HStack(alignment: .top) { Image(systemName: "exclamationmark.circle"); Text(issue).textSelection(.enabled); if work.ready { Button("Réessayer") { work.retrySave() } } }
                             .font(.caption).foregroundStyle(.orange)

@@ -22,3 +22,6 @@ Privacy/
 __pycache__/
 *.dmg
 *.zip
+
+# Local verification and backup artifacts, never release source.
+work/

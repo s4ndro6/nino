@@ -60,6 +60,9 @@ import Combine
     let google = GoogleAccount()
     let notes: StickyNotesStore
     let evidence: WorkEvidenceStore
+    let delivery: DeliveryStore
+    private var deliveryObservation: AnyCancellable?
+    let updates = AppUpdates()
     let attention = AgentAttentionStore()
     private var activityObservation: AnyCancellable?
     var openStickyNote: ((UUID) -> Void)?
@@ -89,6 +92,7 @@ import Combine
         self.analytics = UsageAnalytics(root: root)
         self.notes = StickyNotesStore(fileURL: root.appendingPathComponent("Workspace/sticky-notes.json"))
         self.evidence = WorkEvidenceStore(fileURL: root.appendingPathComponent("Workspace/work-evidence.json"))
+        self.delivery = DeliveryStore(file: root.appendingPathComponent("Workspace/delivery-plans.json"))
         let defaults = UserDefaults.standard
         let initialProfile = WorkProfile(rawValue: defaults.string(forKey: "workProfile") ?? "") ?? .versatile
         self.work = WorkspaceStore(root: root, profileID: initialProfile.rawValue)
@@ -105,6 +109,11 @@ import Combine
         work.onCreated = { [weak self] in self?.analytics.track(.projectCreated) }
         evidence.onFeedbackCreated = { [weak self] in self?.analytics.track(.feedbackCreated) }
         evidence.onGitHubRefreshed = { [weak self] in self?.analytics.track(.githubRefreshed) }
+        deliveryObservation = work.$state.receive(on: RunLoop.main).sink { [weak self] state in
+            guard let self else { return }
+            let project = state.projects.first { $0.id == state.selectedID && $0.profileID == self.work.activeProfileID }
+            self.delivery.activate(key: project?.id.uuidString ?? "profile-\(self.work.activeProfileID ?? "general")", title: project?.title ?? "\(self.profile.title) · ma livraison")
+        }
         activityObservation = work.$activity.compactMap { $0 }.sink { [weak self] event in
             guard let self else { return }
             self.attention.receive(event, projectTitle: self.work.current?.title ?? "Projet")

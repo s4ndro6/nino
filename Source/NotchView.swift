@@ -5,10 +5,12 @@ struct NotchView: View {
     @ObservedObject var presentation: NotchPresentation
     @ObservedObject var work: WorkspaceStore
     @ObservedObject var agent: LocalAgent
+    @ObservedObject var delivery: DeliveryStore
     var hover: (Bool) -> Void
     var open: () -> Void
     var collapse: () -> Void
     @NinoState private var dropTarget = false
+    @NinoState private var showAllTools = false
     @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
 
     var mood: CompanionMood {
@@ -22,6 +24,7 @@ struct NotchView: View {
         if presentation.preview != .idle { return presentation.preview }
         if presentation.reading { return .read }
         if store.timerEnd != nil { return .timer }
+        if delivery.running { return .thinking }
         if work.sharing, let event = work.activity, !event.stale {
             if event.state == "working" { return .thinking }
             if event.state == "completed" { return .success }
@@ -29,6 +32,12 @@ struct NotchView: View {
         }
         if store.notice != nil { return .success }
         return .idle
+    }
+    private var deliveryContext: Bool {
+        !showAllTools && !presentation.showTimer && !presentation.showCallPrompter && !presentation.demo &&
+        !store.isStarting && !store.isStopping && store.recordingID == nil && store.busyID == nil &&
+        !store.copying && store.error == nil &&
+        (delivery.engaged || store.page == "delivery" || [.editor, .designer, .communication, .creator].contains(store.profile))
     }
     var body: some View {
         VStack(spacing: 0) {
@@ -40,13 +49,13 @@ struct NotchView: View {
                     }.frame(width: 96, height: presentation.topHeight)
                 }.buttonStyle(.plain).help("Ouvrir ou replier les outils de Nino")
                 Spacer().frame(width: presentation.cameraWidth)
-                Button { if store.recordingID != nil { store.openCallAssistant?() } else if store.timerEnd != nil && store.recordingID == nil { presentation.showTimer = true; hover(true) } else { navigate("today") } } label: {
+                Button { if store.recordingID != nil { store.openCallAssistant?() } else if store.timerEnd != nil && store.recordingID == nil { presentation.showTimer = true; hover(true) } else if store.updates.hint { navigate("settings"); store.updates.showDetails = true } else { navigate("today") } } label: {
                     Group {
                         if let started = store.recordingStarted {
                             HStack(spacing: 5) { Circle().fill(.red).frame(width: 5,height: 5); Text(started, style: .timer).font(.system(size: 10)).monospacedDigit() }
                         } else if let end = store.timerEnd {
                             Label { Text(end, style: .timer).monospacedDigit() } icon: { Image(systemName: "timer") }.font(.system(size: 11)).foregroundStyle(ninoAccent)
-                        } else { TodayGlance(today: store.today) }
+                        } else { NotchIdleGlance(updates: store.updates, attention: store.attention, today: store.today) }
                     }.frame(width: 104, height: presentation.topHeight)
                 }.buttonStyle(.plain).help(store.timerEnd != nil ? "Ouvrir le minuteur" : "Ouvrir Aujourd’hui")
             }.frame(height: presentation.topHeight)
@@ -54,6 +63,8 @@ struct NotchView: View {
                 if presentation.showCallPrompter {
                     NotchCallPrompter(store: store, assistant: store.assistant, presentation: presentation, close: collapse)
                         .frame(height: 390)
+                } else if deliveryContext {
+                    DeliveryNotch(delivery: delivery, configure: { navigate("delivery") }, tools: { showAllTools = true })
                 } else {
                 VStack(spacing: 12) {
                     if presentation.showTimer { NotchTimerControls(store: store) { presentation.showTimer = false }.frame(height: 90) } else {
@@ -113,10 +124,11 @@ struct NotchView: View {
                             }.font(.system(size: 11)).foregroundStyle(ninoAccent)
                         }.frame(height: 58)
                     } else {
-                        NotchWorkSummary(work: store.work) { navigate("home") }.frame(height: 58)
+                        AgentNotchSummary(attention: store.attention, work: store.work, open: { navigate("today") }, openWork: { navigate("home") }).frame(height: 58)
                     }
                     HStack {
                         Label("Sur ton Mac",systemImage:"lock.shield").foregroundStyle(.secondary)
+                        Button("Livraison", systemImage: "checkmark.seal") { showAllTools = false; navigate("delivery") }
                         Button(presentation.snowEnabled ? "Neige : oui" : "Neige : non", systemImage: "snowflake") { presentation.snowEnabled.toggle() }
                         Spacer()
                         Button("Mon travail",systemImage:"rectangle.stack") { navigate("home") }.buttonStyle(.plain)
@@ -128,8 +140,13 @@ struct NotchView: View {
             .background(Color.black.opacity(presentation.showCallPrompter && !reduceTransparency ? 0.72 : 1), in: UnevenRoundedRectangle(bottomLeadingRadius: presentation.expanded ? 26 : 12, bottomTrailingRadius: presentation.expanded ? 26 : 12))
             .foregroundStyle(.white).preferredColorScheme(.dark)
             .onHover(perform: hover)
-            .onChange(of: presentation.expanded) { _, expanded in if !expanded { presentation.demo = false; presentation.preview = .idle } }
+            .onChange(of: presentation.expanded) { _, expanded in if !expanded { presentation.demo = false; presentation.preview = .idle; showAllTools = false } }
             .onDrop(of: [.fileURL], isTargeted: $dropTarget) { providers in
+                if deliveryContext {
+                    guard !delivery.running, providers.count == 1, let first = providers.first else { return false }
+                    _ = first.loadObject(ofClass: URL.self) { url, _ in Task { @MainActor in if let url, !delivery.running { delivery.select(folder: url) } } }
+                    return true
+                }
                 guard store.canCapture,let first = providers.first else { return false }
                 _ = first.loadObject(ofClass: URL.self) { url,_ in if let url { Task { @MainActor in guard store.canCapture else { return }; await store.importFile(url) } } }
                 return true

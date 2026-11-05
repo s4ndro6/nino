@@ -24,6 +24,7 @@ export SWIFTPM_MODULECACHE_OVERRIDE="$BUILD_ROOT/Cache/SwiftPM"
 export SWIFT_MODULE_CACHE_PATH="$BUILD_ROOT/Cache/Swift"
 # Dependencies are pinned in Package.swift; all build/cache data stays beside the project.
 SPM_FLAGS=(--package-path "$SOURCE_ROOT" --scratch-path "$BUILD_ROOT/SPM" --cache-path "$BUILD_ROOT/Cache" --config-path "$BUILD_ROOT/Config" --security-path "$BUILD_ROOT/Security" --disable-sandbox -c release)
+if [[ "${NINO_BUILD_DEBUG_INFO:-dwarf}" == "none" ]]; then SPM_FLAGS+=(-debug-info-format none); fi
 swift package --package-path "$SOURCE_ROOT" --scratch-path "$BUILD_ROOT/SPM" --cache-path "$BUILD_ROOT/Cache" --config-path "$BUILD_ROOT/Config" --security-path "$BUILD_ROOT/Security" --disable-sandbox resolve
 # ExFAT AppleDouble metadata can otherwise be mistaken for C headers by Clang.
 python3 - "$BUILD_ROOT/SPM/checkouts" <<'PYCODE'

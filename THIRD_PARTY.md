@@ -13,3 +13,9 @@ Aucun média Koi, identifiant de compte, donnée personnelle ou modèle de trans
 ## Connexion Google (0.12)
 
 AppAuth-iOS 2.1.0 (OpenID Foundation), Apache-2.0 : https://github.com/openid/AppAuth-iOS/tree/2.1.0. Le verrou SwiftPM est dans `Source/Package.resolved`. Licence dans `ThirdPartyLicenses/AppAuth-iOS-LICENSE`. Les autres notices Google conservées dans ce dossier concernent les anciennes versions et ne représentent pas les dépendances actuelles.
+
+## Inspiration fonctionnelle — Coucou (0.20)
+
+[Coucou](https://github.com/Louis-CFM/coucou), © 2026 Louis Raillé, propose notamment les alertes de mise à jour et la visibilité des agents depuis l’encoche. Ces usages ont inspiré les modules Nino 0.20 ; leur implémentation est indépendante et réutilise les signaux MCP propres à Nino.
+
+Le [code de Coucou est MIT](https://github.com/Louis-CFM/coucou/blob/main/LICENSE). Sa [licence d’assets distincte](https://github.com/Louis-CFM/coucou/blob/main/LICENSE-ASSETS.md) réserve le nom, Mochi, les visuels, les animations du personnage et les sons. Aucun de ces assets ni code source de Coucou n’est incorporé à Nino. Nino n’est pas affilié à Coucou.

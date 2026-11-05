@@ -41,6 +41,7 @@ final class NinoPanel: NSPanel { override var canBecomeKey: Bool { true }; overr
         stickyWindows?.restoreVisibleNotes()
         store.analytics.track(.appOpened)
         createMenu()
+        store.updates.start()
         store.onDisplayChange = { [weak self] in self?.screenChanged() }
         if store.showOnboarding { presentation.snowEnabled = false }
         touchBarBridge = TouchBarBridge(store: store)
@@ -50,7 +51,7 @@ final class NinoPanel: NSPanel { override var canBecomeKey: Bool { true }; overr
         notch = NinoPanel(contentRect: .zero, styleMask: [.borderless, .nonactivatingPanel], backing: .buffered, defer: false)
         notch.isOpaque = false; notch.backgroundColor = .clear; notch.hasShadow = false; notch.level = .statusBar
         notch.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]; notch.hidesOnDeactivate = false; notch.isReleasedWhenClosed = false
-        notch.contentView = NSHostingView(rootView: NotchView(store: store, presentation: presentation, work: store.work, agent: store.agent, hover: { [weak self] in self?.hover($0) }, open: { [weak self] in self?.showMain() }, collapse: { [weak self] in self?.showNotch(expanded: false) }))
+        notch.contentView = NSHostingView(rootView: NotchView(store: store, presentation: presentation, work: store.work, agent: store.agent, delivery: store.delivery, hover: { [weak self] in self?.hover($0) }, open: { [weak self] in self?.showMain() }, collapse: { [weak self] in self?.showNotch(expanded: false) }))
         showNotch(expanded: false)
         store.openNotchTimer = { [weak self] in self?.presentation.showTimer = true; self?.showNotch(expanded: true) }
         store.openCallAssistant = { [weak self] in self?.showCallAssistant(focus: true) }
@@ -80,6 +81,7 @@ final class NinoPanel: NSPanel { override var canBecomeKey: Bool { true }; overr
     func createMenu() {
         let menu = NSMenu(); let appItem = NSMenuItem(); let appMenu = NSMenu()
         appMenu.addItem(withTitle: "À propos de Nino", action: #selector(about), keyEquivalent: "")
+        appMenu.addItem(withTitle: "Rechercher une mise à jour…", action: #selector(checkUpdates), keyEquivalent: "")
         appMenu.addItem(withTitle: "Réglages…", action: #selector(settings), keyEquivalent: ",")
         if Bundle.main.object(forInfoDictionaryKey:"NinoPreviewSession") as? Bool == true {
             appMenu.addItem(withTitle:"Revenir à mon Nino habituel", action:#selector(exitPreview), keyEquivalent:"")
@@ -106,6 +108,7 @@ final class NinoPanel: NSPanel { override var canBecomeKey: Bool { true }; overr
         if store.google.handle(url) { continue }
         guard url.scheme == scheme else { continue }
         switch url.host {
+        case "delivery": store.page = "delivery"; showMain()
         case "work", "home": store.page = "home"; showMain()
         case "today": store.page = "today"; showMain()
         case "transcript":
@@ -145,11 +148,12 @@ final class NinoPanel: NSPanel { override var canBecomeKey: Bool { true }; overr
             }
         } catch { store.error=error.localizedDescription }
     }
-    @objc func about() { NSApp.orderFrontStandardAboutPanel(options: [.applicationName: "Nino", .applicationVersion: "0.17.0", .credits: NSAttributedString(string: "Compagnon de travail local. SwiftUI · Whisper.cpp · FFmpeg · CodexBar.")]) }
+    @objc func about() { NSApp.orderFrontStandardAboutPanel(options: [.applicationName: "Nino", .applicationVersion: AppUpdates.installedVersion, .credits: NSAttributedString(string: "Compagnon de travail local. SwiftUI · Whisper.cpp · FFmpeg · CodexBar.")]) }
     @objc func compactWindow() { mainWindow.setContentSize(NSSize(width:680,height:540));mainWindow.center();showMain() }
     @objc func comfortableWindow() { mainWindow.setContentSize(fittedWindowSize());mainWindow.center();showMain() }
     @objc func showMain() { mainWindow.makeKeyAndOrderFront(nil); NSApp.activate(ignoringOtherApps: true) }
     @objc func importMedia() { showMain(); store.chooseFiles() }
+    @objc func checkUpdates() { store.page = "settings"; showMain(); store.updates.requestCheck(manual: true) }
     @objc func settings() { store.page = "settings"; showMain() }
     @objc func toggleNotch() { showNotch(expanded: !expanded) }
     private func fittedWindowSize() -> NSSize {
