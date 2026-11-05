@@ -58,7 +58,7 @@ enum CallManualGeneration {
         }
         let session = LanguageModelSession(instructions: request.instructions)
         return try await session.respond(to: request.prompt,
-                                         options: GenerationOptions(samplingMode: .greedy, maximumResponseTokens: 240)).content
+                                         options: GenerationOptions(sampling: .greedy, maximumResponseTokens: 240)).content
     }
 }
 
@@ -91,7 +91,7 @@ enum CallSemanticUnderstanding {
         ])
         let schema = try GenerationSchema(root: root, dependencies: [])
         let result = try await session.respond(to: prompt, schema: schema,
-                                               options: GenerationOptions(samplingMode: .greedy, maximumResponseTokens: 380)).content
+                                               options: GenerationOptions(sampling: .greedy, maximumResponseTokens: 380)).content
         return try CallUnderstoodReply(canAnswer: result.value(Bool.self, forProperty: "canAnswer"),
                                        understoodQuestion: result.value(String.self, forProperty: "understoodQuestion"),
                                        answer: result.value(String.self, forProperty: "answer"))
