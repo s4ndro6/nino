@@ -52,7 +52,14 @@ import Sparkle
     }
 
     func updater(_ updater: SPUUpdater, didAbortWithError error: Error) {
-        model?.installerMessage = "Mise à jour non installée : \(error.localizedDescription)"
+        let failure = error as NSError
+        if failure.domain == SUSparkleErrorDomain && failure.code == Int(SUError.noUpdateError.rawValue) {
+            model?.installerMessage = "Tu utilises la dernière version de Nino."
+        } else if failure.domain == SUSparkleErrorDomain && failure.code == Int(SUError.installationCanceledError.rawValue) {
+            model?.installerMessage = "Installation annulée. Ta version actuelle reste disponible."
+        } else {
+            model?.installerMessage = "Mise à jour non installée : \(error.localizedDescription)"
+        }
     }
 
     func updater(_ updater: SPUUpdater, didFinishUpdateCycleFor updateCheck: SPUUpdateCheck, error: Error?) {

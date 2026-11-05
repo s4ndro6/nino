@@ -15,7 +15,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.21.0</string>
+	<string>0.21.1</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -28,7 +28,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>23</string>
+	<string>24</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>15.0</string>
 	<key>NSAudioCaptureUsageDescription</key>
@@ -61,5 +61,11 @@
 	<false/>
 	<key>SUPublicEDKey</key>
 	<string>3+HgMFM8sh8yLmBBBju7gv7Fge01xCTGD49WZhOaWtw=</string>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>fr</string>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>fr</string>
+	</array>
 </dict>
 </plist>
