@@ -76,6 +76,7 @@ for path in Path(sys.argv[1]).rglob('._*'):
 PYCODE
 # Local alpha signature. A public binary still needs Developer ID + notarization.
 codesign "${APP_SIGNING_FLAGS[@]}" "$APP_ROOT"
+python3 "$PROJECT_ROOT/scripts/normalize-release-permissions.py" "$APP_ROOT"
 # Replace the bundle instead of merging: a clean build must remove stale OAuth/resources.
 NEXT_ROOT="$(mktemp -d "$BUILD_ROOT/package.XXXXXX")"
 ditto --norsrc --noextattr --noacl "$APP_ROOT" "$NEXT_ROOT/Nino.app"
@@ -96,4 +97,5 @@ if ! mv "$NEXT_ROOT/Nino.app" "$PROJECT_ROOT/Nino.app"; then
     if [[ -n "$PREVIOUS_APP" ]]; then mv "$PREVIOUS_APP" "$PROJECT_ROOT/Nino.app"; fi
     exit 1
 fi
+python3 "$PROJECT_ROOT/scripts/normalize-release-permissions.py" "$PROJECT_ROOT/Nino.app"
 codesign --verify --deep --strict "$PROJECT_ROOT/Nino.app"

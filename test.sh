@@ -2,6 +2,7 @@
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")" && pwd)"
 TEST_BUILD="${NINO_TEST_BUILD_DIR:-$ROOT/Build/Tests}"
+python3 "$ROOT/Tests/ReleasePackagingTests.py"
 mkdir -p "$TEST_BUILD/Cache"
 SWIFT_FLAGS=(-parse-as-library -swift-version 5 -module-cache-path "$TEST_BUILD/Cache")
 xcrun swiftc "${SWIFT_FLAGS[@]}" "$ROOT/Source/AppUpdates.swift" "$ROOT/Tests/AppUpdatesTests.swift" -o "$TEST_BUILD/update-tests"

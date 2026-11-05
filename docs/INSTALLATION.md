@@ -8,6 +8,14 @@ Le téléchargement vise les Mac Apple Silicon (M1 ou plus récent), macOS 15+. 
 
 L’alpha est signée ad hoc, pas avec un certificat Developer ID, et n’est pas notariée. Consulter la [procédure Apple](https://support.apple.com/fr-fr/102445) si macOS bloque le premier lancement. Ne pas désactiver Gatekeeper et ne pas ignorer une alerte de logiciel malveillant. Sans exception proposée par macOS, utiliser les sources ou signaler le problème.
 
+## Problèmes rencontrés sur un autre Mac
+
+- **« Vous n’avez pas l’autorisation » / LIRE-MOI illisible dans les versions 0.18–0.20.0** : un défaut de fabrication conservait des droits réservés au compte de compilation. Télécharge la **0.20.1 ou plus récente**, éjecte l’ancien DMG et utilise le nouveau. Remplace uniquement l’application ; ne supprime pas la bibliothèque de données.
+- **« Apple n’a pas pu confirmer… »** : cette version n’a pas de certificat Developer ID ni de ticket de notarisation Apple. Réinstaller ne supprime pas cet avertissement. Consulte la procédure Apple ci-dessus pour décider sur ce Mac ; aucune désactivation globale de Gatekeeper n’est nécessaire.
+- **Mac Intel** : ce téléchargement ne convient pas. Vérifie le type de puce dans À propos de ce Mac.
+
+Une distribution reconnue par Gatekeeper nécessite un certificat Developer ID Application, une signature avec Hardened Runtime et une notarisation Apple acceptée. Voir [la documentation éditeur Apple](https://developer.apple.com/developer-id/). Cette étape n’est pas encore réalisée pour Nino.
+
 ## Première utilisation
 
 Choisir un profil dans l’accueil ; les connexions sont facultatives. Créer un post-it, écrire une idée et cocher une tâche. `⌃⌥N` affiche l’encoche. Réglages → Personnaliser mon Nino rouvre l’accueil.
