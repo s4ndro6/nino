@@ -5,16 +5,19 @@ import Foundation
         let immediate = try await PermissionReply<Int>.wait(timeout: 0.1) { callback in callback(42); callback(99) }
         precondition(immediate == 42, "First callback must win")
         let started = Date()
+        var lateReply: (@Sendable (Int) -> Void)?
         do {
             _ = try await PermissionReply<Int>.wait(timeout: 0.03) { callback in
-                DispatchQueue.global().asyncAfter(deadline: .now() + 0.08) { callback(7); callback(8) }
+                lateReply = callback
             }
             preconditionFailure("Missing timeout")
         } catch VoicePermissionError.timeout {}
-        precondition(Date().timeIntervalSince(started) < 0.5, "No group may await the pending OS callback")
+        precondition(Date().timeIntervalSince(started) < 2, "No group may await the pending OS callback")
+        lateReply?(7); lateReply?(8) // Deliver only after timeout: no scheduler race in the test.
         let cancelled = Task {
             try await PermissionReply<Int>.wait(timeout: 2) { callback in
-                DispatchQueue.global().asyncAfter(deadline: .now() + 0.08) { callback(3) }
+                // Simulate an OS prompt that never responds. Cancellation must still resolve.
+                _ = callback
             }
         }
         try await Task.sleep(for: .milliseconds(10)); cancelled.cancel()

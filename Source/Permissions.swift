@@ -31,7 +31,8 @@ final class PermissionReply<Value>: @unchecked Sendable {
                 reply.install(continuation)
                 guard !Task.isCancelled else { reply.resolve(.failure(CancellationError())); return }
                 let deadline = DispatchWorkItem { reply.resolve(.failure(VoicePermissionError.timeout)) }
-                DispatchQueue.main.asyncAfter(deadline: .now() + timeout, execute: deadline)
+                // A busy UI (or a command-line test runner) must not postpone the timeout.
+                DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: .now() + timeout, execute: deadline)
                 request { value in deadline.cancel(); reply.resolve(.success(value)) }
             }
         }, onCancel: { reply.resolve(.failure(CancellationError())) })
