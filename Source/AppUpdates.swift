@@ -66,7 +66,7 @@ private final class NoUpdateRedirects: NSObject, URLSessionTaskDelegate, @unchec
 }
 
 @MainActor final class AppUpdates: ObservableObject {
-    nonisolated static var installedVersion: String { Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "0.20.1" }
+    nonisolated static var installedVersion: String { Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "0.21.0" }
     @Published private(set) var automatic: Bool
     @Published private(set) var checking = false
     @Published private(set) var latest: NinoRelease?
@@ -74,6 +74,10 @@ private final class NoUpdateRedirects: NSObject, URLSessionTaskDelegate, @unchec
     @Published private(set) var lastCheck: Date?
     @Published private(set) var revision = 0
     @Published var showDetails = false
+    @Published var installerReady = false
+    @Published var installerMessage = ""
+    var installAction: (() -> Void)?
+    func installUpdate() { installAction?() }
     private let defaults: UserDefaults
     private let current: String
     private let fetch: () async throws -> Data

@@ -41,6 +41,36 @@ cp -X "$BINARY_ROOT/Nino" "$APP_ROOT/Contents/MacOS/Nino"
 xcrun swiftc -parse-as-library -swift-version 5 -target arm64-apple-macosx15.0 -module-cache-path "$BUILD_ROOT/Cache/Swift" "$PROJECT_ROOT/MCP/Server.swift" -o "$APP_ROOT/Contents/MacOS/nino-mcp"
 codesign "${SIGNING_FLAGS[@]}" "$APP_ROOT/Contents/MacOS/nino-mcp"
 cp -X "$SOURCE_ROOT/Info.plist" "$APP_ROOT/Contents/Info.plist"
+python3 - "$APP_ROOT/Contents/Info.plist" "${NINO_PUBLIC_BUILD:-0}" <<'PYPUBLIC'
+import plistlib, sys
+from pathlib import Path
+p = Path(sys.argv[1]); info = plistlib.loads(p.read_bytes())
+info['NinoPublicDistribution'] = sys.argv[2] == '1'
+p.write_bytes(plistlib.dumps(info))
+PYPUBLIC
+# SPM resolves the pinned Sparkle binary; embed its complete framework, helpers and resources.
+SPARKLE_FRAMEWORK="$(python3 - "$BUILD_ROOT/SPM/artifacts" <<'PYSPARKLE'
+from pathlib import Path
+import sys
+matches = [p for p in Path(sys.argv[1]).rglob('Sparkle.framework') if p.is_dir() and not p.is_symlink()]
+if len(matches) != 1: raise SystemExit('Expected exactly one pinned Sparkle framework')
+print(matches[0])
+PYSPARKLE
+)"
+mkdir -p "$APP_ROOT/Contents/Frameworks"
+ditto --norsrc --noextattr --noacl "$SPARKLE_FRAMEWORK" "$APP_ROOT/Contents/Frameworks/Sparkle.framework"
+# Public verification key only. Private signing keys never enter the source or build output.
+if [[ -f "$PROJECT_ROOT/Configuration/UpdatePublicKey.txt" ]]; then
+    python3 - "$PROJECT_ROOT/Configuration/UpdatePublicKey.txt" "$APP_ROOT/Contents/Info.plist" <<'PYKEY'
+from pathlib import Path
+import base64, plistlib, sys
+key = Path(sys.argv[1]).read_text().strip()
+raw = base64.b64decode(key, validate=True)
+if len(raw) != 32 or not any(raw): raise SystemExit('Invalid update public key')
+p = Path(sys.argv[2]); info = plistlib.loads(p.read_bytes()); info['SUPublicEDKey'] = key
+p.write_bytes(plistlib.dumps(info))
+PYKEY
+fi
 cp -X "$SOURCE_ROOT/Nino.icns" "$APP_ROOT/Contents/Resources/Nino.icns"
 # Ship license notices with every binary, including clean DMG installations.
 mkdir -p "$APP_ROOT/Contents/Resources/Licenses"
@@ -74,6 +104,15 @@ import sys
 for path in Path(sys.argv[1]).rglob('._*'):
     if path.is_file(): path.unlink()
 PYCODE
+# Sparkle's SPM artifacts are ad-hoc signed. A future Developer ID build must use the app's
+# own identity for nested code as well, preserving the sandbox entitlements on its XPC services.
+if [[ "$SIGNING_IDENTITY" != "-" ]]; then
+    FRAMEWORK="$APP_ROOT/Contents/Frameworks/Sparkle.framework/Versions/B"
+    for component in "$FRAMEWORK"/XPCServices/*.xpc(N) "$FRAMEWORK/Updater.app" "$FRAMEWORK/Autoupdate"; do
+        codesign "${SIGNING_FLAGS[@]}" --preserve-metadata=entitlements "$component"
+    done
+    codesign "${SIGNING_FLAGS[@]}" "$APP_ROOT/Contents/Frameworks/Sparkle.framework"
+fi
 # Local alpha signature. A public binary still needs Developer ID + notarization.
 codesign "${APP_SIGNING_FLAGS[@]}" "$APP_ROOT"
 python3 "$PROJECT_ROOT/scripts/normalize-release-permissions.py" "$APP_ROOT"

@@ -21,7 +21,14 @@ struct GoogleDesktopConfiguration {
         clientID = id; clientSecret = secret?.isEmpty == false ? secret : nil
     }
     static func load(bundle: Bundle) throws -> Self {
-        guard let url = bundle.url(forResource: "GoogleDesktopOAuth", withExtension: "plist"),
+        // Personal publisher configuration survives an app update outside the bundle.
+        // Session tokens remain in Keychain and are never read from this file.
+        let local = FileManager.default.homeDirectoryForCurrentUser
+            .appendingPathComponent("Library/Application Support/Nino/Configuration/GoogleDesktopOAuth.plist")
+        let url = bundle.url(forResource: "GoogleDesktopOAuth", withExtension: "plist") ?? local
+        guard let attributes = try? FileManager.default.attributesOfItem(atPath: url.path),
+              attributes[.type] as? FileAttributeType == .typeRegular,
+              let size = attributes[.size] as? NSNumber, size.intValue < 8192,
               let data = try? Data(contentsOf: url), data.count < 8192,
               let values = try? PropertyListSerialization.propertyList(from: data, format: nil) as? [String: Any] else {
             throw NinoError("Google n’est pas encore activé dans cette version. Tu peux continuer sans compte.")

@@ -26,7 +26,8 @@ final class NinoPanel: NSPanel { override var canBecomeKey: Bool { true }; overr
     let presentation = NotchPresentation()
     var expanded = false
     var collapseWork: DispatchWorkItem?
-    var terminationAttempt: UUID?
+    var nativeUpdates: NativeUpdates?
+    let terminationGate = TerminationGate()
     var welcomeCompanion: OnboardingCompanionController?
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.regular)
@@ -42,6 +43,12 @@ final class NinoPanel: NSPanel { override var canBecomeKey: Bool { true }; overr
         stickyWindows?.restoreVisibleNotes()
         store.analytics.track(.appOpened)
         createMenu()
+        nativeUpdates = NativeUpdates(model: store.updates, blockingReason: { [weak self] in
+            self?.updateBlockingReason
+        }, flushNotes: { [weak self] in
+            self?.stickyWindows?.flush()
+            self?.store.notes.flush()
+        })
         store.updates.start()
         store.onDisplayChange = { [weak self] in self?.screenChanged() }
         if store.showOnboarding { presentation.snowEnabled = false }
@@ -158,7 +165,7 @@ final class NinoPanel: NSPanel { override var canBecomeKey: Bool { true }; overr
     @objc func comfortableWindow() { mainWindow.setContentSize(fittedWindowSize());mainWindow.center();showMain() }
     @objc func showMain() { mainWindow.makeKeyAndOrderFront(nil); NSApp.activate(ignoringOtherApps: true) }
     @objc func importMedia() { showMain(); store.chooseFiles() }
-    @objc func checkUpdates() { store.page = "settings"; showMain(); store.updates.requestCheck(manual: true) }
+    @objc func checkUpdates() { store.page = "settings"; showMain(); if store.updates.installerReady { store.updates.installUpdate() } else { store.updates.requestCheck(manual: true) } }
     @objc func settings() { store.page = "settings"; showMain() }
     @objc func toggleSnow() { presentation.snowEnabled.toggle() }
     @objc func toggleNotch() { showNotch(expanded: !expanded) }
@@ -221,32 +228,24 @@ final class NinoPanel: NSPanel { override var canBecomeKey: Bool { true }; overr
     func applicationDidBecomeActive(_ notification: Notification) { VoicePermissions.shared.refresh() }
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool { false }
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool { showMain(); return true }
+    var updateBlockingReason: String? {
+        NativeUpdatePolicy.Work(recording: store.recordingID != nil, starting: store.isStarting,
+            stopping: store.isStopping, transcribing: store.busyID != nil, importing: store.copying,
+            summarizing: store.summaryBusy, generating: store.agent.working || store.assistant.thinking || store.assistant.understanding,
+            checkingDelivery: store.delivery.running, connecting: store.google.busy,
+            savingWorkspace: store.work.saving, unsavedNotes: store.notes.hasUnsavedChanges).reason
+    }
     func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
-        store.saveSettings()
-        stickyWindows?.flush()
-        store.notes.flush()
-        if store.notes.hasUnsavedChanges {
-            store.error = "Les post-it ne sont pas sauvegardés. Réessaie leur sauvegarde avant de quitter."
-            showMain(); return .terminateCancel
-        }
-        if store.isStarting { store.cancelRecordingStart() }
-        if store.recordingID != nil || store.busyID != nil || store.isStarting {
-            let alert = NSAlert(); alert.messageText = "Un travail est encore en cours"; alert.informativeText = "Arrête l’enregistrement ou annule la transcription avant de quitter. Tes originaux restent conservés."; alert.addButton(withTitle: "Revenir à Nino"); alert.runModal(); showMain(); return .terminateCancel
-        }
-        guard terminationAttempt == nil else { return .terminateLater }
-        let attempt = UUID(); terminationAttempt = attempt
-        store.work.revokeOnExit { [weak self] success in
-            guard let self, self.terminationAttempt == attempt else { return }
-            self.terminationAttempt = nil
-            if !success { self.store.error = "Le disque ne permet pas de confirmer la fermeture. Le partage MCP expirera sous cinq minutes." }
-            sender.reply(toApplicationShouldTerminate: success)
-        }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
-            guard let self, self.terminationAttempt == attempt else { return }
-            self.terminationAttempt = nil
-            self.store.error = "Le disque ne répond pas. Fermeture annulée pour protéger les changements en attente. Le partage MCP expirera sous cinq minutes."
-            sender.reply(toApplicationShouldTerminate: false)
-        }
-        return .terminateLater
+        let decision = terminationGate.request(flush: { [weak self] in
+            self?.store.saveSettings()
+            self?.stickyWindows?.flush()
+            self?.store.notes.flush()
+        }, blocker: { [weak self] in self?.updateBlockingReason }, revoke: { [weak self] completion in
+            guard let self else { completion(false); return }
+            self.store.work.revokeOnExit(completion: completion)
+        }, report: { [weak self] issue in
+            self?.store.error = issue; self?.showMain()
+        }, reply: { sender.reply(toApplicationShouldTerminate: $0) })
+        return decision == .cancel ? .terminateCancel : .terminateLater
     }
 }

@@ -11,15 +11,18 @@ let package = Package(
     name: "Nino",
     platforms: [.macOS("15.0")],
     products: [.executable(name: "Nino", targets: ["Nino"])],
-    dependencies: [.package(url: "https://github.com/openid/AppAuth-iOS.git", exact: "2.1.0")],
+    dependencies: [.package(url: "https://github.com/openid/AppAuth-iOS.git", exact: "2.1.0"),
+                   .package(url: "https://github.com/sparkle-project/Sparkle", exact: "2.10.1")],
     targets: [
         .executableTarget(
             name: "Nino",
-            dependencies: [.product(name: "AppAuth", package: "AppAuth-iOS")],
+            dependencies: [.product(name: "AppAuth", package: "AppAuth-iOS"),
+                           .product(name: "Sparkle", package: "Sparkle")],
             path: ".",
             exclude: excluded,
             sources: sources,
             linkerSettings: [
+                .unsafeFlags(["-Xlinker", "-rpath", "-Xlinker", "@executable_path/../Frameworks"]),
                 .linkedFramework("SwiftUI"), .linkedFramework("AppKit"),
                 .linkedFramework("AVFoundation"), .linkedFramework("AVKit"),
                 .linkedFramework("ScreenCaptureKit"), .linkedFramework("Speech"),

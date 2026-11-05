@@ -150,7 +150,9 @@ private final class UsageSessionDelegate: NSObject, URLSessionTaskDelegate, @unc
     private func write<T: Encodable>(_ value: T, to url: URL, maximum: Int) throws {
         try validatePath(url)
         let data = try JSONEncoder().encode(value); guard data.count <= maximum else { throw UsageAnalyticsError.invalidQueue }
-        try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true, attributes: [.posixPermissions: 0o700])
+        if !FileManager.default.fileExists(atPath: folder.path) {
+            try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: false, attributes: [.posixPermissions: 0o700])
+        }
         try validatePath(url)
         try data.write(to: url, options: .atomic)
         try FileManager.default.setAttributes([.posixPermissions: 0o600], ofItemAtPath: url.path)

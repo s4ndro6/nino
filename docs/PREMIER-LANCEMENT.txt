@@ -32,6 +32,8 @@ MISES À JOUR ET DONNÉES
 Quitte Nino avant de remplacer uniquement l’app dans Applications.
 Ne supprime pas ta bibliothèque de notes et de documents.
 Dans Nino → Réglages → Mises à jour, active les alertes si tu les souhaites.
-Aucun téléchargement ni remplacement automatique.
+Depuis la 0.21, « Installer et relancer » télécharge et vérifie la mise à jour,
+puis demande ton accord pour redémarrer. Aucun remplacement silencieux.
+Depuis une version 0.20 ou antérieure, installe une dernière fois le DMG.
 
 Besoin d’aide : https://github.com/s4ndro6/nino/issues

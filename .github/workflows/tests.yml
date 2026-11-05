@@ -16,6 +16,8 @@ jobs:
       - name: Test persistence, Git connector and MCP with synthetic data
         run: bash test.sh
       - name: Build the native app with the installed macOS SDK
+        env:
+          NINO_PUBLIC_BUILD: "1"
         run: zsh Source/build.sh
       - name: Package the clean build
         run: ditto -c -k --keepParent Nino.app Nino-ci.zip

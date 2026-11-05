@@ -86,7 +86,7 @@ import Combine
         self.root = root
         var storageIssue: String?
         if root.standardizedFileURL.path == NinoPaths.root.standardizedFileURL.path {
-            do { try NinoPaths.prepareInstalledRoot(root, portable: NinoPaths.portable) }
+            do { try NinoPaths.prepareInstalledRoot(root, portable: NinoPaths.portable, requireExisting: NinoPaths.configuredRoot != nil) }
             catch { storageIssue = "Impossible de préparer le dossier local Nino : " + error.localizedDescription }
         }
         self.analytics = UsageAnalytics(root: root)
@@ -176,8 +176,8 @@ import Combine
     var modelReady: Bool { FileManager.default.fileExists(atPath: modelURL.path) }
     var active: Document? { documents.first { $0.id == selected } }
     var filtered: [Document] { documents.filter { search.isEmpty || $0.title.localizedCaseInsensitiveContains(search) || $0.transcript.localizedCaseInsensitiveContains(search) } }
-    var canConfigure: Bool { recordingID == nil && !isStarting && !isStopping && busyID == nil }
-    var canCapture: Bool { !libraryLoading && canConfigure }
+    var canConfigure: Bool { !copying && recordingID == nil && !isStarting && !isStopping && busyID == nil }
+    var canCapture: Bool { !libraryLoading && canConfigure && FileManager.default.fileExists(atPath: root.path) }
     func dismissOnboarding() {
         showOnboarding = false
         analytics.track(.onboardingCompleted)

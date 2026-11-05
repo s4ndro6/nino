@@ -53,17 +53,16 @@ import UniformTypeIdentifiers
         let panel=NSOpenPanel();panel.title="Choisir un modèle Whisper GGML";panel.allowedContentTypes=[UTType(filenameExtension:"bin") ?? .data];panel.canChooseDirectories=false
         guard panel.runModal() == .OK, let source=panel.url else { return }
         let destination=store.root.appendingPathComponent("Models").appendingPathComponent(source.lastPathComponent)
-        copyingModel=true
+        copyingModel=true; store.copying=true
         Task {
-            defer { copyingModel=false }
+            defer { copyingModel=false; store.copying=false }
             do {
                 let props=try source.resourceValues(forKeys:[.isRegularFileKey,.isSymbolicLinkKey])
                 guard props.isRegularFile == true, props.isSymbolicLink != true else { throw NinoError("Choisis un fichier modèle ordinaire.") }
                 guard destination.resolvingSymlinksInPath().path.hasPrefix(store.root.resolvingSymlinksInPath().path + "/") else { throw NinoError("Le modèle doit rester dans le dossier Nino.") }
                 if source.standardizedFileURL != destination.standardizedFileURL {
                     try await Task.detached(priority:.userInitiated) {
-                        let folder=destination.deletingLastPathComponent()
-                        try FileManager.default.createDirectory(at:folder,withIntermediateDirectories:true)
+                        _ = try NinoPaths.prepareModelFolder(root: destination.deletingLastPathComponent().deletingLastPathComponent())
                         try FileManager.default.copyItem(at:source,to:destination)
                     }.value
                 }

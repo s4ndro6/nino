@@ -7,6 +7,7 @@ VERSION=$(/usr/libexec/PlistBuddy -c 'Print CFBundleShortVersionString' "$APP/Co
 [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo 'Version invalide'; exit 1; }
 [[ "$(/usr/libexec/PlistBuddy -c 'Print CFBundleIdentifier' "$APP/Contents/Info.plist")" == 'app.sandro.nino' ]] || { echo 'Identité incorrecte'; exit 1; }
 [[ ! -e "$APP/Contents/Resources/GoogleDesktopOAuth.plist" ]] || { echo 'Configuration privée : reconstruire avec NINO_PUBLIC_BUILD=1'; exit 1; }
+python3 "$ROOT/scripts/verify-update-config.py" "$APP/Contents/Info.plist"
 codesign --verify --deep --strict "$APP"
 mkdir -p "$DEST"
 IMAGE="$DEST/Nino-$VERSION-macOS-arm64.dmg"

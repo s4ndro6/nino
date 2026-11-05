@@ -21,6 +21,17 @@ import Foundation
         let absent = fixture.appendingPathComponent("absent/external")
         try NinoPaths.prepareInstalledRoot(absent, portable: true)
         precondition(!fm.fileExists(atPath: absent.path))
+        precondition(NinoPaths.dataRoot(bundle: external, home: home, portable: false, configured: expected) == expected)
+        precondition(NinoPaths.dataRoot(bundle: external, home: home, portable: true, configured: expected) == external.deletingLastPathComponent())
+        try NinoPaths.prepareInstalledRoot(expected, portable: false, requireExisting: true)
+        do { try NinoPaths.prepareInstalledRoot(absent, portable: false, requireExisting: true); fatalError("Missing external root recreated") }
+        catch is CocoaError { }
+        precondition(!fm.fileExists(atPath: absent.path))
+        _ = try NinoPaths.prepareModelFolder(root: expected)
+        _ = try NinoPaths.prepareModelFolder(root: expected)
+        do { _ = try NinoPaths.prepareModelFolder(root: absent); fatalError("Model import recreated missing root") }
+        catch is CocoaError { }
+        precondition(!fm.fileExists(atPath: absent.path))
         let linked = fixture.appendingPathComponent("linked")
         try fm.createSymbolicLink(at: linked, withDestinationURL: expected)
         do { try NinoPaths.prepareInstalledRoot(linked.appendingPathComponent("nested"), portable: false); fatalError("Symlink accepted") }

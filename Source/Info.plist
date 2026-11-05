@@ -15,7 +15,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.20.1</string>
+	<string>0.21.0</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -28,7 +28,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>22</string>
+	<string>23</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>15.0</string>
 	<key>NSAudioCaptureUsageDescription</key>
@@ -45,5 +45,21 @@
 	<string>Nino lit sa bibliothèque et conserve tes enregistrements et transcriptions dans le dossier Nino de ce disque externe.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>Nino transcrit le son des appels en direct et peut suivre ta voix dans le prompteur avec la reconnaissance locale Apple. Aucun repli cloud n’est activé.</string>
+	<key>SUFeedURL</key>
+	<string>https://nino-companion.vercel.app/appcast.xml</string>
+	<key>SUEnableAutomaticChecks</key>
+	<false/>
+	<key>SUAutomaticallyUpdate</key>
+	<false/>
+	<key>SUAllowsAutomaticUpdates</key>
+	<false/>
+	<key>SUEnableSystemProfiling</key>
+	<false/>
+	<key>SUVerifyUpdateBeforeExtraction</key>
+	<true/>
+	<key>SUShowReleaseNotes</key>
+	<false/>
+	<key>SUPublicEDKey</key>
+	<string>3+HgMFM8sh8yLmBBBju7gv7Fge01xCTGD49WZhOaWtw=</string>
 </dict>
 </plist>

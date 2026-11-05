@@ -187,7 +187,18 @@ struct WorkEvidenceRepository {
         guard fileURL.isFileURL else { throw EvidenceFailure("Stockage local requis.") }
         let path = fileURL.standardizedFileURL
         guard path.path == path.resolvingSymlinksInPath().path else { throw EvidenceFailure("Le carnet de preuves ne peut pas utiliser un lien symbolique.") }
-        if create { try FileManager.default.createDirectory(at: fileURL.deletingLastPathComponent(), withIntermediateDirectories: true) }
+        if create {
+            let parent = fileURL.deletingLastPathComponent()
+            guard FileManager.default.fileExists(atPath: parent.deletingLastPathComponent().path) else {
+                throw EvidenceFailure("Le disque Nino n’est pas disponible. Rebranche-le avant de sauvegarder.")
+            }
+            var directory: ObjCBool = false
+            if FileManager.default.fileExists(atPath: parent.path, isDirectory: &directory) {
+                guard directory.boolValue else { throw EvidenceFailure("Dossier des preuves invalide.") }
+            } else {
+                try FileManager.default.createDirectory(at: parent, withIntermediateDirectories: false)
+            }
+        }
     }
     func load() throws -> WorkEvidenceState {
         try checkPath(create: false)

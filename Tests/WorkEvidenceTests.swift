@@ -59,6 +59,9 @@ private func rejects(_ body: () throws -> Void, line: UInt = #line) { do { try b
         let symlink = root.appendingPathComponent("link.json")
         try FileManager.default.createSymbolicLink(at: symlink, withDestinationURL: file)
         rejects { _ = try WorkEvidenceRepository(fileURL: symlink).load() }
+        let disconnected = root.appendingPathComponent("disconnected/Workspace/evidence.json")
+        rejects { try WorkEvidenceRepository(fileURL: disconnected).save(WorkEvidenceState()) }
+        try check(!FileManager.default.fileExists(atPath: root.appendingPathComponent("disconnected").path))
         print("PASS WorkEvidence: timecodes, safe URLs, fixed GitHub endpoint, HTTP/size bounds, parsing, stale snapshots, isolation, atomic persistence, corruption preservation, CSV injection, Markdown escaping, symlinks")
     }
 }
