@@ -1,0 +1,37 @@
+NINO — PREMIER LANCEMENT GRATUIT SUR MAC
+
+Aucun achat ni abonnement Apple Developer n’est nécessaire pour utiliser Nino.
+Ce téléchargement est destiné aux Mac Apple Silicon (M1 ou suivant), macOS 15+.
+Nino est une alpha non notariée : Apple peut demander une autorisation manuelle.
+
+1. Télécharge Nino depuis https://nino-companion.vercel.app
+2. Ouvre le fichier .dmg et glisse Nino dans Applications.
+3. Éjecte le disque Nino, puis ouvre Nino depuis Applications.
+4. Si Apple indique ne pas pouvoir vérifier Nino ou son développeur,
+   ferme cette alerte, puis ouvre Réglages Système.
+5. Va dans Confidentialité et sécurité, puis descends à la partie Sécurité.
+6. Si macOS propose « Ouvrir quand même » pour Nino et que tu choisis de
+   lui faire confiance, clique sur ce bouton.
+7. Confirme avec Touch ID ou le mot de passe de ton Mac si demandé,
+   puis confirme « Ouvrir ». Ne communique ton mot de passe à personne.
+8. Choisis ton profil et essaie un post-it. Les connexions sont facultatives.
+
+Cette autorisation vise Nino uniquement : ne désactive pas les protections
+macOS. Si le bouton n’apparaît pas, réessaie d’ouvrir Nino puis reviens dans
+ces réglages. Un Mac géré par une entreprise ou une école peut interdire
+cette autorisation : contacte alors son administrateur.
+
+Si macOS affirme avoir détecté un logiciel malveillant, indique que l’app
+endommagera l’ordinateur, ou signale qu’elle est endommagée, ne force pas
+son ouverture. Ce n’est pas le simple avertissement de développeur non vérifié.
+
+Procédure officielle Apple, à lire avant de décider :
+https://support.apple.com/fr-fr/102445
+
+MISES À JOUR ET DONNÉES
+Quitte Nino avant de remplacer uniquement l’app dans Applications.
+Ne supprime pas ta bibliothèque de notes et de documents.
+Dans Nino → Réglages → Mises à jour, active les alertes si tu les souhaites.
+Aucun téléchargement ni remplacement automatique.
+
+Besoin d’aide : https://github.com/s4ndro6/nino/issues

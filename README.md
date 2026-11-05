@@ -26,7 +26,18 @@ Version 0.20.1 — alpha publique, non notariée par Apple.
 
 Aucun Terminal, abonnement ou compte obligatoire pour commencer. Mac Intel, Windows et Linux ne sont pas pris en charge par ce téléchargement.
 
-> **Premier lancement :** cette alpha n’est pas encore signée avec un certificat Developer ID ni notariée. macOS peut la bloquer. Après avoir essayé de l’ouvrir, consulte **Réglages Système → Confidentialité et sécurité** pour décider d’autoriser cette application. [Procédure officielle Apple](https://support.apple.com/fr-fr/102445). Aucune commande pour désactiver Gatekeeper n’est nécessaire ou fournie. Si macOS signale un logiciel malveillant ou ne propose pas d’exception, ne force pas l’ouverture et ouvre une issue.
+### Si Apple bloque le premier lancement
+
+Nino reste gratuit. Cette alpha n’est pas notariée : **aucun abonnement Apple n’est nécessaire pour l’utiliser**, mais macOS peut demander ton accord.
+
+1. Après avoir essayé d’ouvrir Nino depuis Applications, ferme l’alerte indiquant qu’Apple ne peut pas vérifier l’app ou son développeur.
+2. Ouvre **Réglages Système → Confidentialité et sécurité** et descends à la partie **Sécurité**.
+3. Si **Ouvrir quand même** est proposé pour Nino et que tu choisis de lui faire confiance, clique dessus.
+4. Valide avec Touch ID ou le mot de passe de ton Mac si demandé, puis confirme **Ouvrir**.
+
+Cette autorisation concerne Nino uniquement. Si macOS signale un logiciel malveillant détecté, une app qui endommagera l’ordinateur ou une app endommagée, ne force pas son ouverture. Si aucune exception n’est proposée, consulte la [procédure officielle Apple](https://support.apple.com/fr-fr/102445) ; les Mac gérés peuvent imposer d’autres restrictions.
+
+[Guide complet à garder sous la main](docs/PREMIER-LANCEMENT.txt) · Aucune commande Terminal ni désactivation globale de Gatekeeper.
 
 Les sommes SHA-256 sont jointes à la [release](https://github.com/s4ndro6/nino/releases/tag/v0.20.1). Déplace l’app avant de configurer le MCP : son chemin doit rester stable.
 

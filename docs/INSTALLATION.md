@@ -16,6 +16,10 @@ L’alpha est signée ad hoc, pas avec un certificat Developer ID, et n’est pa
 
 Une distribution reconnue par Gatekeeper nécessite un certificat Developer ID Application, une signature avec Hardened Runtime et une notarisation Apple acceptée. Voir [la documentation éditeur Apple](https://developer.apple.com/developer-id/). Cette étape n’est pas encore réalisée pour Nino.
 
+## Autoriser le premier lancement gratuitement
+
+Suis le [guide pas à pas](PREMIER-LANCEMENT.txt) : après la première tentative d’ouverture, **Réglages Système → Confidentialité et sécurité → Sécurité → Ouvrir quand même**, si proposé pour Nino et si tu décides de lui faire confiance. Confirme ensuite **Ouvrir**. Aucun paiement ni abonnement n’est demandé pour utiliser l’app.
+
 ## Première utilisation
 
 Choisir un profil dans l’accueil ; les connexions sont facultatives. Créer un post-it, écrire une idée et cocher une tâche. `⌃⌥N` affiche l’encoche. Réglages → Personnaliser mon Nino rouvre l’accueil. **Affichage → Neige sur le bureau** active ou désactive la neige, quel que soit le mode de l’encoche.
