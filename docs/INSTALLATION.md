@@ -18,7 +18,7 @@ Une distribution reconnue par Gatekeeper nécessite un certificat Developer ID A
 
 ## Première utilisation
 
-Choisir un profil dans l’accueil ; les connexions sont facultatives. Créer un post-it, écrire une idée et cocher une tâche. `⌃⌥N` affiche l’encoche. Réglages → Personnaliser mon Nino rouvre l’accueil.
+Choisir un profil dans l’accueil ; les connexions sont facultatives. Créer un post-it, écrire une idée et cocher une tâche. `⌃⌥N` affiche l’encoche. Réglages → Personnaliser mon Nino rouvre l’accueil. **Affichage → Neige sur le bureau** active ou désactive la neige, quel que soit le mode de l’encoche.
 
 ## Transcription locale
 

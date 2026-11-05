@@ -2,6 +2,8 @@
 
 ## 0.20.1 — Installation sur un autre Mac
 
+- Rend la neige accessible depuis Affichage → Neige sur le bureau, même dans le mode Livraison.
+
 - Corrige les droits du paquet et du LIRE-MOI : dossiers et exécutables 755, documents 644, y compris sous umask 077.
 - Le lien Applications n’est jamais suivi pendant cette correction.
 - Ajoute un test de non-régression et clarifie l’alerte Apple. La version reste non notariée ; les permissions ne remplacent pas une signature Developer ID.

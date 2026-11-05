@@ -18,6 +18,7 @@ final class NinoPanel: NSPanel { override var canBecomeKey: Bool { true }; overr
     var callPanel: NinoPanel?
     let snow = SnowController()
     var snowObservation: AnyCancellable?
+    var snowMenuItem: NSMenuItem?
     var callAnswerObservation: AnyCancellable?
     var touchBarBridge: TouchBarBridge?
     var status: NSStatusItem!
@@ -61,6 +62,7 @@ final class NinoPanel: NSPanel { override var canBecomeKey: Bool { true }; overr
         }
         snowObservation = presentation.$snowEnabled.sink { [weak self] enabled in
             UserDefaults.standard.set(enabled, forKey: "snowEnabled"); self?.snow.setEnabled(enabled)
+            self?.snowMenuItem?.state = enabled ? .on : .off
         }
         store.openPrompter = { [weak self] in self?.showPrompter() }
         NotificationCenter.default.addObserver(self, selector: #selector(screenChanged), name: NSApplication.didChangeScreenParametersNotification, object: nil)
@@ -100,6 +102,9 @@ final class NinoPanel: NSPanel { override var canBecomeKey: Bool { true }; overr
         let viewItem=NSMenuItem();viewItem.title="Affichage";let viewMenu=NSMenu(title:"Affichage")
         viewMenu.addItem(withTitle:"Fenêtre compacte",action:#selector(compactWindow),keyEquivalent:"")
         viewMenu.addItem(withTitle:"Fenêtre confortable",action:#selector(comfortableWindow),keyEquivalent:"")
+        let snowItem = NSMenuItem(title: "Neige sur le bureau", action: #selector(toggleSnow), keyEquivalent: "")
+        snowItem.state = presentation.snowEnabled ? .on : .off; snowMenuItem = snowItem
+        viewMenu.addItem(.separator()); viewMenu.addItem(snowItem)
         viewItem.submenu=viewMenu;menu.addItem(viewItem);NSApp.mainMenu=menu
     }
     func application(_ application: NSApplication, open urls: [URL]) {
@@ -155,6 +160,7 @@ final class NinoPanel: NSPanel { override var canBecomeKey: Bool { true }; overr
     @objc func importMedia() { showMain(); store.chooseFiles() }
     @objc func checkUpdates() { store.page = "settings"; showMain(); store.updates.requestCheck(manual: true) }
     @objc func settings() { store.page = "settings"; showMain() }
+    @objc func toggleSnow() { presentation.snowEnabled.toggle() }
     @objc func toggleNotch() { showNotch(expanded: !expanded) }
     private func fittedWindowSize() -> NSSize {
         let available=(NSScreen.main ?? NSScreen.screens.first)?.visibleFrame.size ?? NSSize(width:1280,height:800)
