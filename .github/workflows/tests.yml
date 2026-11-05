@@ -1,0 +1,19 @@
+name: Local core and MCP
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: macos-26
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Test persistence, Git connector and MCP with synthetic data
+        run: bash test.sh
+      - name: Build the native app with the installed macOS SDK
+        run: zsh Source/build.sh

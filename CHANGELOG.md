@@ -1,0 +1,78 @@
+# Changelog
+
+## 0.18.0 — 2026-11-05
+
+- Première distribution publique personnelle sur GitHub, DMG Apple Silicon et guide de premier lancement.
+- Stockage Application Support séparé du bundle, préparation automatique et compatibilité explicite avec les bibliothèques portables/découverte.
+- Build public sans configuration OAuth, licences incluses, ressources AppAuth seulement, remplacement complet du bundle avec sauvegarde.
+- README de présentation, aperçu animé, bouton de téléchargement, prérequis et limites explicites.
+- Tests des chemins installés et de la création du dossier de données ; CI sur macOS 26 avec Python 3.12.
+
+## 0.17.1 — 2026-11-05
+
+- Animation de promenade articulée, profil trois quarts, pas liés à la distance, bras alternés, escalade, regard, réflexion et salut.
+- Trajectoires bornées à l’écran courant, deux itinéraires alternés, accélération/décélération et tests des raccords.
+- Post-it papier en six couleurs, texture statique, adhésif, coin plié, contraste et panneau manipulable.
+- Accueil en cinq étapes, scène Mac/post-it, choix facultatifs et navigation persistante.
+- Consentement aux compteurs d’usage, aucune collecte avant accord, retrait/purge et aucun endpoint livré.
+- Collecteur local SQLite avec schéma strict, déduplication, rétention, limite globale de requêtes et fixtures synthétiques.
+
+## 0.16.0 — 2026-11-05
+
+- Parcours unique de préparation audio, état réel des autorisations, timeout micro/Speech, annulation du démarrage.
+- Conservation des pistes audio finalisées lorsqu’une autre piste échoue.
+- Post-it locaux avec panneaux flottants, projets, checklist, couleurs, corbeille et export Markdown.
+- File des signaux MCP observés, avec acquittement et distinction explicite des chats non connectés.
+- Retours par projet avec version/timecode/statut, exports CSV/Markdown ; relevé GitHub Actions public réel sur demande.
+- Identité de signature configurable au build, sans certificat ou notarisation inclus.
+
+## 0.15.0 — 2026-11-05
+
+- Le clic explicite Lire dans l’encoche donne le focus au lecteur, sans prise de focus des réponses automatiques.
+
+- Correction de la question et reformulation « Plus simple » depuis l’encoche.
+- Contexte figé avec chaque réponse : une correction ne récupère pas un autre sujet apparu ensuite.
+- Refus des corrections devenues obsolètes pendant la saisie ; brouillon conservé.
+- Publication complète des réponses manuelles ; ancienne réponse conservée en cas d’erreur, d’annulation ou de résultat hors limites.
+- Consignes plus précises sur les causes, comparaisons et nuances ; aucune garantie de justesse du modèle.
+
+## 0.14.0 — 2026-11-05
+
+- Fond du téléprompteur à 72 % d’opacité, respect du réglage macOS Réduire la transparence.
+- Filtre des phrases incomplètes avant analyse locale ; question reformulée et réponse publiées ensemble.
+- Ancienne réponse conservée avec son heure pendant l’analyse d’une nouvelle candidate.
+- Protection contre réponses obsolètes et réanalyse en boucle d’un candidat actif.
+- Tests synthétiques : question après-achat contextualisée, fragments SAV et .com rejetés par filtre. La justesse générale du modèle n’est pas garantie.
+
+
+## 0.13.0 — 2026-11-05
+
+- Réponses de cours en streaming, directement dans l’encoche, avec question, pagination, taille du texte et lecture automatique.
+- Maintien ouvert hors survol, masquage manuel et option d’ouverture automatique.
+- Détection plus stable des questions, déduplication des corrections Speech, invalidation des réponses périmées.
+- Première réponse locale mesurée à 4,45 s, terminée à 4,82 s sur une question synthétique ; ce n’est pas une garantie de latence.
+- Capture Teams réelle reprise après réinscription de l’autorisation macOS de la build ad hoc.
+
+
+## 0.12.0 — 2026-11-05
+
+- Connexion Google de bureau AppAuth : navigateur, PKCE, session Trousseau, reprise explicite ; Gmail distinct.
+- Espaces par métier et modèles éditables ; migration des fiches anciennes vers Général.
+- Compagnon mobile autour de la fenêtre d’accueil, réglage discret/joueur et respect de Réduire les animations.
+- Mode Cours : explications locales et synthèse de l’extrait récent du direct.
+- Tests d’isolation des profils, révocation MCP au changement d’espace et gestion des scopes Google renouvelés.
+- Connexion réelle Google et reprise après redémarrage vérifiées. Gmail, appel Teams réel et nouvelle promenade multi-écran restent à valider.
+
+
+## 0.11.0 — 2026-11-05
+
+- Nouvel accueil centré sur un travail : brief, prochaine action, étapes et liens persistants.
+- Association d’une conversation Codex et transfert explicite du contexte à l’assistant local.
+- Connecteur de dépôt Git local, borné et en lecture seule ; refus des filtres pouvant exécuter du code.
+- Serveur MCP stdio natif, contexte opt-in, signaux déclaratifs d’agent, révocation et bail de cinq minutes.
+- Affichage du travail dans l’encoche ; animation adaptée aux signaux d’agent dans l’encoche et via le pont Touch Bar.
+- Centre de connexions avec aperçu du partage et export de configuration MCP.
+- Fenêtres compacte et confortable ; sélecteurs natifs rattachés à la fenêtre.
+- Documentation de contribution/sécurité, protocole MCP et suite CI sans comptes réels.
+
+Google/Gmail restent inactifs sans configuration OAuth et signature éditeur. Pas de backend de comptes, de client MCP généraliste, ni de connecteur de déploiement distant dans cette version.

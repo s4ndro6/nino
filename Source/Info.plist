@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDisplayName</key>
+	<string>Nino</string>
+	<key>CFBundleExecutable</key>
+	<string>Nino</string>
+	<key>CFBundleIconFile</key>
+	<string>Nino</string>
+	<key>CFBundleIdentifier</key>
+	<string>app.sandro.nino</string>
+	<key>CFBundleName</key>
+	<string>Nino</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>0.18.0</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>Nino actions</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>nino</string>
+			</array>
+		</dict>
+	</array>
+	<key>CFBundleVersion</key>
+	<string>19</string>
+	<key>LSMinimumSystemVersion</key>
+	<string>15.0</string>
+	<key>NSAudioCaptureUsageDescription</key>
+	<string>Nino enregistre le son du Mac lorsque tu démarres l’enregistrement d’un appel.</string>
+	<key>NSDocumentsFolderUsageDescription</key>
+	<string>Nino utilise uniquement sa bibliothèque et les fichiers que tu choisis pour les transcrire.</string>
+	<key>NSHighResolutionCapable</key>
+	<true/>
+	<key>NSHumanReadableCopyright</key>
+	<string>Nino — version personnelle de Sandro, 2026.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Nino utilise le micro uniquement lorsque tu démarres une note vocale, un appel, une dictée ou le suivi du prompteur. Les fichiers restent sur ton disque.</string>
+	<key>NSRemovableVolumesUsageDescription</key>
+	<string>Nino lit sa bibliothèque et conserve tes enregistrements et transcriptions dans le dossier Nino de ce disque externe.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Nino transcrit le son des appels en direct et peut suivre ta voix dans le prompteur avec la reconnaissance locale Apple. Aucun repli cloud n’est activé.</string>
+</dict>
+</plist>

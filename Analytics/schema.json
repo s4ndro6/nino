@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Nino usage batch v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "policy_version",
+    "consented_at_day",
+    "batch_id",
+    "counters"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "policy_version": {
+      "const": 1
+    },
+    "consented_at_day": {
+      "type": "string",
+      "format": "date"
+    },
+    "batch_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "counters": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 128,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "day",
+          "event",
+          "major_version",
+          "count"
+        ],
+        "properties": {
+          "day": {
+            "type": "string",
+            "format": "date"
+          },
+          "event": {
+            "enum": [
+              "app_opened",
+              "assistant_used",
+              "connector_connected",
+              "document_exported",
+              "document_imported",
+              "feedback_created",
+              "github_refreshed",
+              "onboarding_completed",
+              "project_created",
+              "recording_completed",
+              "recording_failed",
+              "recording_started",
+              "sticky_note_created",
+              "timer_started",
+              "transcription_completed",
+              "transcription_failed"
+            ]
+          },
+          "major_version": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 999
+          },
+          "count": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000
+          }
+        }
+      }
+    }
+  }
+}
