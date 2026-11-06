@@ -63,8 +63,8 @@ final class NinoPanel: NSPanel { override var canBecomeKey: Bool { true }; overr
         showNotch(expanded: false)
         store.openNotchTimer = { [weak self] in self?.presentation.showTimer = true; self?.showNotch(expanded: true) }
         store.openCallAssistant = { [weak self] in self?.showCallAssistant(focus: true) }
-        callAnswerObservation = store.assistant.$answerRevision.dropFirst().receive(on: RunLoop.main).sink { [weak self] _ in
-            guard let self, self.presentation.automaticCallPrompter, self.store.assistant.running else { return }
+        callAnswerObservation = store.assistant.$answerRevision.dropFirst().receive(on: RunLoop.main).sink { [weak self] revision in
+            guard let self, self.store.assistant.answerRevision == revision, !self.store.assistant.suggestion.isEmpty, self.presentation.automaticCallPrompter, self.store.assistant.running else { return }
             self.showCallAssistant()
         }
         snowObservation = presentation.$snowEnabled.sink { [weak self] enabled in

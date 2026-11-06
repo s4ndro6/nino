@@ -41,6 +41,8 @@ import Foundation
         precondition(CallQuestions.isClearlyIncomplete("Quelle est la différence entre le"))
         precondition(!CallQuestions.isClearlyIncomplete("Et ensuite le poste d’achat, c’est une fois que j’ai payé, qu’est-ce qui se passe ?"))
         precondition(!CallQuestions.isClearlyIncomplete("Est-ce que si le produit est défectueux, le service client intervient ?"))
+        precondition(!CallQuestions.isClearlyIncomplete("Et pourquoi ça ?"))
+        precondition(CallQuestions.isClearlyIncomplete("Et pourquoi le"))
         print("PASS call questions: extraction, false-positive cues, stable cumulative snapshots, extension suppression, replacement race, reset and expiry")
     }
 }

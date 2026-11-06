@@ -30,8 +30,10 @@ xcrun swiftc "${SWIFT_FLAGS[@]}" "$ROOT/Source/CallQuestions.swift" "$ROOT/Tests
 "$TEST_BUILD/call-question-tests"
 
 # Deterministic answer-state regressions: no recording, local model, account or network.
-xcrun swiftc "${SWIFT_FLAGS[@]}" "$ROOT/Source/Domain.swift" "$ROOT/Source/Permissions.swift" "$ROOT/Source/LiveSpeech.swift" "$ROOT/Source/CallQuestions.swift" "$ROOT/Source/CallAssistant.swift" "$ROOT/Tests/CallAnswerSnapshotTests.swift" -o "$TEST_BUILD/call-answer-snapshots"
+xcrun swiftc "${SWIFT_FLAGS[@]}" "$ROOT/Source/Domain.swift" "$ROOT/Source/Permissions.swift" "$ROOT/Source/LiveSpeech.swift" "$ROOT/Source/CallQuestions.swift" "$ROOT/Source/CallMemory.swift" "$ROOT/Source/IntelligenceAPI.swift" "$ROOT/Source/CallCloud.swift" "$ROOT/Source/CallAssistant.swift" "$ROOT/Tests/CallAnswerSnapshotTests.swift" -o "$TEST_BUILD/call-answer-snapshots"
 "$TEST_BUILD/call-answer-snapshots"
+xcrun swiftc "${SWIFT_FLAGS[@]}" "$ROOT/Source/Domain.swift" "$ROOT/Source/Permissions.swift" "$ROOT/Source/LiveSpeech.swift" "$ROOT/Source/CallQuestions.swift" "$ROOT/Source/CallMemory.swift" "$ROOT/Source/IntelligenceAPI.swift" "$ROOT/Source/CallCloud.swift" "$ROOT/Source/CallAssistant.swift" "$ROOT/Tests/CallContextTests.swift" -o "$TEST_BUILD/call-context-tests"
+"$TEST_BUILD/call-context-tests"
 
 # Permission state machinery: no OS prompt or microphone opened.
 xcrun swiftc "${SWIFT_FLAGS[@]}" "$ROOT/Source/Permissions.swift" "$ROOT/Tests/PermissionTests.swift" -o "$TEST_BUILD/permission-tests"

@@ -97,6 +97,7 @@ import Combine
         self.notes = StickyNotesStore(fileURL: root.appendingPathComponent("Workspace/sticky-notes.json"))
         self.evidence = WorkEvidenceStore(fileURL: root.appendingPathComponent("Workspace/work-evidence.json"))
         self.delivery = DeliveryStore(file: root.appendingPathComponent("Workspace/delivery-plans.json"))
+        agent.settings.onConfigurationChange = { [weak assistant] in assistant?.cloudConfigurationChanged() }
         let defaults = UserDefaults.standard
         let initialProfile = WorkProfile(rawValue: defaults.string(forKey: "workProfile") ?? "") ?? .versatile
         self.work = WorkspaceStore(root: root, profileID: initialProfile.rawValue)

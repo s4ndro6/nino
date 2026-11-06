@@ -3,16 +3,18 @@ import SwiftUI
 @MainActor final class IntelligenceSettings: ObservableObject {
     @Published var provider: IntelligenceProvider {
         didSet {
+            onConfigurationChange?()
             defaults.set(provider.rawValue, forKey: "intelligence.provider")
             model = defaults.string(forKey: "intelligence.model." + provider.rawValue) ?? ""
             models = []; message = nil
         }
     }
-    @Published var model: String { didSet { defaults.set(model, forKey: "intelligence.model." + provider.rawValue) } }
+    @Published var model: String { didSet { if model != oldValue { onConfigurationChange?() }; defaults.set(model, forKey: "intelligence.model." + provider.rawValue) } }
     @Published var models: [String] = []
     @Published var message: String?
     @Published var checking = false
     @Published var generating = false
+    var onConfigurationChange: (() -> Void)?
     private let defaults: UserDefaults
     let keys: IntelligenceKeychain
     private var checkTask: Task<Void, Never>?
@@ -24,12 +26,12 @@ import SwiftUI
     var busy: Bool { checking || generating }
     func save(_ key: String) -> Bool {
         guard !busy else { return false }
-        do { try keys.save(key.trimmingCharacters(in: .whitespacesAndNewlines), for: provider); message = "Clé enregistrée dans le Trousseau. Vérifie la connexion pour charger les modèles."; return true }
+        do { onConfigurationChange?(); try keys.save(key.trimmingCharacters(in: .whitespacesAndNewlines), for: provider); message = "Clé enregistrée dans le Trousseau. Vérifie la connexion pour charger les modèles."; return true }
         catch { message = error.localizedDescription; return false }
     }
     func removeKey() {
         guard !busy else { return }
-        do { try keys.remove(provider); models = []; message = "Clé retirée du Trousseau de Nino. Pour la révoquer chez le fournisseur, utilise son tableau de bord." }
+        do { onConfigurationChange?(); try keys.remove(provider); models = []; message = "Clé retirée du Trousseau de Nino. Pour la révoquer chez le fournisseur, utilise son tableau de bord." }
         catch { message = error.localizedDescription }
     }
     func verify() {
@@ -57,12 +59,12 @@ struct IntelligenceConnectionView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             Label("Une IA pour tes brouillons", systemImage: "sparkles").font(.title3.weight(.semibold))
-            Text("Choisis le moteur de l’assistant. Les enregistrements et les réponses automatiques d’appel restent locaux.").font(.caption).foregroundStyle(.secondary)
+            Text("Choisis le moteur de l’assistant. Les réponses d’appel utilisent Apple Intelligence par défaut. Active séparément le cloud dans Appel si tu souhaites y envoyer des extraits de transcription.").font(.caption).foregroundStyle(.secondary)
             Picker("Fournisseur", selection: $settings.provider) {
                 ForEach(IntelligenceProvider.allCases) { Text($0.title).tag($0) }
             }.disabled(settings.busy)
             if settings.provider != .apple {
-                Text("Seul le texte que tu envoies depuis l’assistant est transmis à \(settings.provider == .openai ? "OpenAI" : "Anthropic"). La facturation API est séparée de ton abonnement ChatGPT ou Claude. Nino n’inclut pas de crédits.").font(.caption).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
+                Text("Le texte envoyé depuis l’assistant, et les extraits d’appel uniquement après ton accord pour cet appel, sont transmis à \(settings.provider == .openai ? "OpenAI" : "Anthropic"). La facturation API est séparée de ton abonnement ChatGPT ou Claude. Nino n’inclut pas de crédits.").font(.caption).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
                 SecureField("Coller une clé API pour l’enregistrer ou la remplacer", text: $key).textFieldStyle(.roundedBorder).disabled(settings.busy)
                 ViewThatFits {
                     HStack { keyActions }

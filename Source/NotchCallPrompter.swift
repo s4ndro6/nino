@@ -35,7 +35,7 @@ struct NotchCallPrompter: View {
                 .font(.system(size: 13, weight: .medium)).foregroundStyle(.white.opacity(0.65))
                 .lineLimit(2).frame(maxWidth: .infinity, alignment: .leading)
             if let updated = assistant.answerUpdatedAt {
-                Text("Dernière réponse · " + updated.formatted(date: .omitted, time: .standard))
+                Text(assistant.answerSource + " · " + updated.formatted(date: .omitted, time: .standard))
                     .font(.system(size: 10)).foregroundStyle(.white.opacity(0.65))
             }
             ScrollView {
@@ -101,6 +101,12 @@ struct NotchCallPrompter: View {
                     Button(store.isStopping ? "Arrêt…" : "Arrêter l’écoute") { Task { await store.stopRecording() } }.disabled(store.isStopping)
                 }
             }.font(.system(size: 10)).foregroundStyle(.secondary)
+            HStack {
+                Button(assistant.autoSuggest ? "Pause des suggestions" : "Reprendre les suggestions") { assistant.autoSuggest.toggle() }
+                Spacer()
+                Text(assistant.cloudRoute == nil ? "IA locale" : "Cloud · \(assistant.cloudRequests)/20").foregroundStyle(.secondary)
+                if assistant.cloudRoute != nil { Button("Revenir en local") { assistant.disableCloud() } }
+            }.font(.system(size: 10))
             Text("Visible si tu partages cet écran · masquer ne coupe pas l’écoute.")
                 .font(.system(size: 9)).foregroundStyle(.secondary)
         }

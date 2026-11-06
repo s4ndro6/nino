@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.24.0 — Le fil de l’appel, dans l’encoche
+
+- Mémoire temporaire des paroles avec sélection de passages antérieurs et extrait récent pour contextualiser chaque question. Nouvelle mémoire à chaque appel.
+- Apple Intelligence par défaut ; OpenAI ou Claude via clé API après confirmation explicite pour cet appel, annulée à l’arrêt ou au changement de configuration.
+- Maximum 20 demandes cloud par appel, délai de 10 secondes entre analyses automatiques et mise en pause après erreur fournisseur.
+- Dernière question prioritaire, réponses obsolètes annulées, correction et simplification conservent leurs preuves initiales.
+- Source de la réponse et pause/reprise des suggestions dans le téléprompteur ; page Appel défilante sur les petits écrans.
+- Connexions ChatGPT/Codex et Claude Code toujours distinctes de l’API du téléprompteur.
+
+
 ## 0.23.0 — Une IA pour tes brouillons
 
 - Apple Intelligence par défaut ; OpenAI Responses et Claude Messages disponibles avec une clé API personnelle dans le Trousseau.

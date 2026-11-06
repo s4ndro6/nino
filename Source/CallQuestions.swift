@@ -30,7 +30,7 @@ enum CallQuestions {
         let cleaned = text.trimmingCharacters(in: .whitespacesAndNewlines)
         let words = cleaned.folding(options: [.diacriticInsensitive, .caseInsensitive], locale: Locale(identifier: "fr"))
             .split { !$0.isLetter && !$0.isNumber }.map(String.init)
-        guard words.count >= 4 else { return true }
+        guard words.count >= 3 else { return true }
         let dangling: Set<String> = ["le", "la", "les", "un", "une", "des", "de", "du", "au", "aux", "si", "que", "qui", "pour", "avec", "dans", "et", "ou", "est", "sont", "serait", "donc", "alors"]
         if let last = words.last, dangling.contains(last) { return true }
         // Without its main clause, an 'est-ce que si…' lead-in is not safely answerable.

@@ -4,7 +4,7 @@ struct CallPage: View {
     @ObservedObject var store: NinoStore
     @ObservedObject var assistant: CallAssistant
     var body: some View {
-        VStack(alignment: .leading, spacing: 18) {
+        ScrollView { VStack(alignment: .leading, spacing: 18) {
             HStack {
                 VStack(alignment: .leading, spacing: 6) {
                     Text("Un fil pendant l’appel.").font(.system(size: 30, weight: .semibold))
@@ -30,12 +30,13 @@ struct CallPage: View {
                 }.disabled(!store.canCapture || assistant.thinking)
                 Text("Exemple simulé").font(.system(size:10)).foregroundStyle(.secondary)
             }
+            CallCloudControls(assistant: assistant, settings: store.agent.settings) { store.page = "connections" }
             Text(assistant.modelStatus).font(.system(size:11)).foregroundStyle(.secondary)
             Text("Contexte pour les réponses — ton rôle, le sujet, les faits confirmés").font(.headline)
             TextEditor(text:$assistant.context).font(.system(size:14)).frame(height:90).padding(8).background(.black.opacity(0.15),in:RoundedRectangle(cornerRadius:10)).onChange(of:assistant.context) { _,_ in assistant.saveContext() }
             Divider()
-            CallContent(store:store,assistant:assistant,compact:false)
-        }.padding(28)
+            CallContent(store:store,assistant:assistant,compact:false).frame(minHeight: 380)
+        }.padding(28) }
     }
 }
 struct CallContent: View {
@@ -50,7 +51,7 @@ struct CallContent: View {
                     ForEach(CallPurpose.allCases) { Text($0.title).tag($0) }
                 }.pickerStyle(.segmented).frame(maxWidth: 220)
                 if assistant.purpose == .course {
-                    Button("Faire le point") { assistant.makeCoursePoint() }.font(.caption).disabled(!assistant.canMakeCoursePoint).help("Résumer l’extrait récent du direct, limité à 6 500 caractères")
+                    Button("Faire le point") { assistant.makeCoursePoint() }.font(.caption).disabled(!assistant.canMakeCoursePoint).help("Résumer l’extrait récent du direct, limité aux 3 000 derniers caractères et aux passages antérieurs sélectionnés")
                 }
                 Spacer(minLength: 0)
             }

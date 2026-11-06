@@ -6,7 +6,7 @@
 2. **OpenAI** : clé personnelle OpenAI Platform, endpoint Responses. Le texte visible de l’assistant est envoyé à OpenAI au clic « Envoyer à OpenAI ». `store=false` pour les réponses ; les règles de conservation du fournisseur s’appliquent malgré cela.
 3. **Claude** : clé personnelle Claude Console, endpoint Messages. Le texte visible est envoyé à Anthropic au clic « Envoyer à Claude ».
 
-Les appels, audio, documents, mails et comptes Google ne sont jamais joints automatiquement à ces demandes. L’assistant n’exécute aucun outil ni commande. Le résumé local des documents et les suggestions automatiques d’appel continuent à utiliser Apple Intelligence. Aucun basculement automatique vers une API en cas d’échec local.
+Les audio, documents, mails et comptes Google ne sont pas joints aux demandes de l’assistant. Depuis 0.24, le téléprompteur peut transmettre des extraits de transcription après une confirmation distincte pour chaque appel. Apple Intelligence reste son moteur par défaut, sans basculement cloud automatique. Aucun outil ni commande n’est exécuté par ces générations. [Guide du direct](CALL-ASSISTANT.md).
 
 ## Ajouter une clé
 
@@ -16,13 +16,15 @@ La liste OpenAI est filtrée sur les familles de texte courantes ; le fournisseu
 
 La facturation API est distincte des abonnements ChatGPT/Claude. Nino n’inclut ni compte, ni crédits. La clé est dans une entrée dédiée du Trousseau macOS classique, sans synchronisation demandée, avec son contrôle d’accès natif. Elle n’entre ni dans les préférences, ni dans la bibliothèque, ni dans les exports ou les logs. Une mise à jour ad hoc peut faire redemander l’accès par macOS.
 
-Retirer une clé dans Nino efface seulement son entrée locale ; la révocation définitive se fait chez le fournisseur. Pendant une requête, les réglages sont bloqués. Annuler interrompt l’attente et le résultat n’est pas appliqué ; le fournisseur peut avoir déjà commencé une génération facturable. Nino ne réessaie pas automatiquement.
+Retirer une clé dans Nino efface seulement son entrée locale ; la révocation définitive se fait chez le fournisseur. Pendant une requête du chatbot, les réglages sont bloqués. Changer la configuration pendant un appel révoque son accord cloud et annule les réponses en attente. Annuler interrompt l’attente et le résultat n’est pas appliqué ; le fournisseur peut avoir déjà commencé une génération facturable. Nino ne réessaie pas automatiquement.
 
 ## Abonnements et outils officiels
 
 Les boutons **Connecter ChatGPT via Codex** et **Connecter Claude Code** ouvrent `codex login` ou `claude auth login` dans l’outil officiel installé, puis son navigateur. Les identifiants restent gérés par ces outils ; Nino ne lit pas leurs mots de passe. Sans l’outil, le guide d’installation officiel s’ouvre.
 
 Ces connexions servent au tableau de suivi. Elles ne connectent pas l’API du chatbot Nino et ne remplacent pas une clé. La connexion web Claude.ai n’est pas proposée comme OAuth générique pour les utilisateurs de Nino. L’assistant embarqué utilise les API documentées.
+
+La documentation OpenAI décrit désormais un parcours **Sign in with ChatGPT** pour les applications open source, avec inscription dynamique, PKCE, validation de l’identité et permission d’utiliser le forfait. Ce parcours n’est pas implémenté dans Nino 0.24 : le téléprompteur cloud utilise une clé API, pas la session Codex. Il ne faut pas présenter cette limite de Nino comme une impossibilité générale du fournisseur. Référence : https://developers.openai.com/siwc/token-sharing-open-source/sign-in
 
 ## Transformer une transcription en prochaines actions
 

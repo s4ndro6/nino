@@ -7,10 +7,10 @@
 Un post-it à garder sous les yeux. Le fil de ton projet. Une pause pour te concentrer.<br>
 Nino s’installe dans l’encoche de ton Mac et accompagne ta journée, à ton rythme.
 
-[![Télécharger Nino pour Mac](docs/assets/download.svg)](https://github.com/s4ndro6/nino/releases/download/v0.23.0/Nino-0.23.0-macOS-arm64.dmg)
+[![Télécharger Nino pour Mac](docs/assets/download.svg)](https://github.com/s4ndro6/nino/releases/download/v0.24.0/Nino-0.24.0-macOS-arm64.dmg)
 
 **Apple Silicon · macOS 15 ou plus · gratuit · MIT**<br>
-Version 0.23.0 — alpha publique, non notariée par Apple.
+Version 0.24.0 — alpha publique, non notariée par Apple.
 
 [Le site Nino](https://nino-companion.vercel.app) · [Installation](#en-trois-gestes) · [Ce que tu peux faire](#ton-petit-coin-de-bureau) · [Contribuer](CONTRIBUTING.md) · [Signaler un problème](https://github.com/s4ndro6/nino/issues)
 
@@ -20,15 +20,21 @@ Version 0.23.0 — alpha publique, non notariée par Apple.
 
 ## Ton IA, à ton choix
 
-Dans **Connexions → Une IA pour tes brouillons** : Apple Intelligence local, ou **OpenAI / Claude avec ta propre clé API**. Enregistre la clé dans le Trousseau, vérifie-la, choisis un modèle de texte, puis ouvre **Assistant**. Seul le texte visible est envoyé quand tu cliques. La facturation API est distincte des abonnements ChatGPT et Claude.
+Dans **Connexions → Une IA pour tes brouillons** : Apple Intelligence local, ou **OpenAI / Claude avec ta propre clé API**. Enregistre la clé dans le Trousseau, vérifie-la, choisis un modèle de texte, puis ouvre **Assistant**. Depuis Assistant, le texte visible est envoyé quand tu cliques. Dans Appel, le cloud exige un accord distinct pour l’appel en cours. La facturation API est distincte des abonnements ChatGPT et Claude.
 
 Dans un document transcrit : **Résumé → Préparer un résumé avec mon IA…** ouvre le texte pour relecture avant envoi. Un brief déjà saisi est conservé jusqu’à ton choix de le remplacer. Le résultat peut devenir un post-it. Des points de départ sont proposés pour les tickets, le montage et les réponses.
 
 **Connecter ChatGPT via Codex / Connecter Claude Code** lance la connexion des outils officiels installés, pour leur suivi et les quotas. Cela ne transforme pas un abonnement en clé API de l’assistant. [Guide des connexions et limites](docs/INTELLIGENCE.md).
 
+## Une réponse dans l’encoche pendant l’appel
+
+**Appel → renseigner le contexte → Démarrer l’appel.** Nino transcrit le son du Mac, repère une question complète et prépare une proposition avec Apple Intelligence. Les paroles récentes et des passages antérieurs pertinents accompagnent chaque demande. Active **Réponses auto dans l’encoche** dans le lecteur pour les voir apparaître. **Pause des suggestions** garde la transcription active ; **Plus simple** et **Corriger la question** gardent le contexte de la réponse affichée.
+
+Pour OpenAI/Claude : configure la clé et le modèle dans Connexions, puis **Utiliser le cloud pour cet appel…** et confirme. Des extraits de transcription seront transmis au fournisseur, avec une limite de 20 demandes par appel. L’accord expire à l’arrêt. Pas de basculement cloud automatique, pas de réponse parlée à ta place. [Fonctionnement et limites](docs/CALL-ASSISTANT.md).
+
 ## En trois gestes
 
-1. **[Télécharge le DMG](https://github.com/s4ndro6/nino/releases/download/v0.23.0/Nino-0.23.0-macOS-arm64.dmg)** et ouvre-le.
+1. **[Télécharge le DMG](https://github.com/s4ndro6/nino/releases/download/v0.24.0/Nino-0.24.0-macOS-arm64.dmg)** et ouvre-le.
 2. **Glisse Nino dans Applications**, puis éjecte le disque Nino.
 3. **Ouvre Nino depuis Applications.** Choisis ton profil, ou commence directement avec une note.
 
@@ -47,7 +53,7 @@ Cette autorisation concerne Nino uniquement. Si macOS signale un logiciel malvei
 
 [Guide complet à garder sous la main](docs/PREMIER-LANCEMENT.txt) · Aucune commande Terminal ni désactivation globale de Gatekeeper.
 
-Les sommes SHA-256 sont jointes à la [release](https://github.com/s4ndro6/nino/releases/tag/v0.23.0). Déplace l’app avant de configurer le MCP : son chemin doit rester stable.
+Les sommes SHA-256 sont jointes à la [release](https://github.com/s4ndro6/nino/releases/tag/v0.24.0). Déplace l’app avant de configurer le MCP : son chemin doit rester stable.
 
 **Nouveau en 0.21 :** installation des mises à jour depuis Nino, avec téléchargement signé, confirmation et relance. Une dernière installation manuelle est nécessaire depuis les versions 0.20 et antérieures.
 
