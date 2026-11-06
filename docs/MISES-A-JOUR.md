@@ -10,7 +10,7 @@ La prochaine version intègre Sparkle 2.10.1 pour télécharger, vérifier la si
 - Sans clé publique valide, le bouton d’installation intégrée est absent et la raison est affichée.
 - Le conditionnement public refuse de produire un DMG sans configuration de signature.
 - La signature EdDSA est distincte de la notarisation Apple. Nino reste gratuit et non notarié ; une autorisation macOS peut encore être nécessaire.
-- Le parcours réel téléchargement → vérification → remplacement → relance doit être validé avant publication.
+- Le parcours public 0.21.0 → 0.21.1 a été validé : téléchargement → vérification → remplacement → relance. Voir `VALIDATION-0.21.md` pour les preuves et limites.
 
 ## Publication par le mainteneur
 

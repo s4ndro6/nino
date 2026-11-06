@@ -84,7 +84,7 @@ Les modèles s’adaptent à ton profil. **Nino ne pilote pas directement Photos
 | Google / Gmail | **Non activés dans le téléchargement public.** Le code du connecteur est fourni ; sa configuration éditeur et sa validation publique restent à finaliser. Aucun compte Google n’est requis pour essayer Nino. |
 | Touch Bar | Extension MTMR facultative, configuration manuelle. [Guide Touch Bar](TouchBar/README.md). |
 
-Nino est une **alpha**. L’installation neuve sur tous les Mac, la fiabilité de tous les appels et la justesse de l’IA ne sont pas garanties. [Correction d’installation 0.20.1](VALIDATION-0.20.1.md) · [Vérifications 0.20](VALIDATION-0.20.md) · [Limites de la première distribution](VALIDATION-0.18.md).
+Nino est une **alpha**. L’installation neuve sur tous les Mac, la fiabilité de tous les appels et la justesse de l’IA ne sont pas garanties. [Mise à jour intégrée 0.21 vérifiée](VALIDATION-0.21.md) · [Correction d’installation 0.20.1](VALIDATION-0.20.1.md) · [Vérifications 0.20](VALIDATION-0.20.md) · [Limites de la première distribution](VALIDATION-0.18.md).
 
 ## Tes données restent les tiennes
 
