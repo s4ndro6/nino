@@ -78,7 +78,7 @@ struct SetupConnectionsView: View {
         VStack(alignment:.leading,spacing:16) {
             connector("Codex / ChatGPT", "Quotas d’abonnement et chats enregistrés sur ce Mac.", "codex",setup.codex)
             connector("Claude / Claude Code", "Quotas de ton abonnement, via le connecteur local CodexBar.", "claude",setup.claude)
-            Text("Pas de compte Nino à créer. Ces connexions sont facultatives. Une session déjà présente peut être vérifiée ; Se connecter ouvre la connexion officielle dans Terminal puis le navigateur.").font(.system(size:12)).foregroundStyle(.secondary).fixedSize(horizontal:false,vertical:true)
+            Text("Pas de compte Nino à créer. Ces connexions sont facultatives. Ces sessions servent au suivi des outils officiels, pas aux réponses de l’assistant Nino. Pour ces réponses, choisis Apple Intelligence ou une clé API. La connexion ouvre l’outil officiel installé puis le navigateur.").font(.system(size:12)).foregroundStyle(.secondary).fixedSize(horizontal:false,vertical:true)
             if let message=setup.message { Text(message).font(.system(size:12)).foregroundStyle(ninoAccent).fixedSize(horizontal:false,vertical:true) }
         }
     }
@@ -88,7 +88,7 @@ struct SetupConnectionsView: View {
             Text(detail).font(.system(size:12)).foregroundStyle(.secondary)
             Label(setup.checking == provider ? "Vérification…" : status,systemImage:status.hasPrefix("Connexion vérifiée") ? "checkmark.circle" : "link").font(.system(size:11)).foregroundStyle(ninoAccent).fixedSize(horizontal:false,vertical:true)
             HStack {
-                Button("Se connecter") { setup.connect(provider) }.buttonStyle(NinoPrimaryStyle())
+                Button(provider == "codex" ? "Connecter ChatGPT via Codex" : "Connecter Claude Code") { setup.connect(provider) }.buttonStyle(NinoPrimaryStyle())
                 Button("Vérifier") { Task { await setup.verify(provider) } }.disabled(setup.checking != nil)
                 Button("Installation") { setup.openGuide(provider) }.buttonStyle(.plain).foregroundStyle(.secondary)
             }

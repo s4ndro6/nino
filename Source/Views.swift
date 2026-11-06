@@ -254,6 +254,12 @@ struct DocumentView: View {
                 } else {
                     VStack(alignment: .leading, spacing: 14) {
                         HStack { Text("Apple Intelligence · sur ce Mac").font(.system(size: 11)).foregroundStyle(.secondary); Spacer(); Button(store.summaryBusy ? "Résumé en cours…" : "Générer") { Task { await store.summarize(id) } }.disabled(store.summaryBusy || doc.segments.isEmpty) }
+                        Button("Préparer un résumé avec mon IA…") {
+                            guard !store.agent.working else { return }
+                            store.agent.prepareDraft("Résume cette transcription en français : points clés, décisions, actions explicites et questions ouvertes. N’invente rien.\n\n" + doc.segments.map { "\($0.speaker): \($0.text)" }.joined(separator: "\n"))
+                            store.page = "agent"
+                        }.disabled(doc.segments.isEmpty || store.agent.working)
+                        Text("Le texte est d’abord ouvert dans l’assistant pour relecture. Rien n’est envoyé avant ton clic ; les textes longs doivent être divisés en parties.").font(.caption).foregroundStyle(.secondary)
                         TextEditor(text: Binding(get: { self.doc?.summary ?? "" }, set: { value in store.edit(id) { $0.summary = value } })).font(.system(size: 14)).scrollContentBackground(.hidden)
                     }.padding(20)
                 }

@@ -66,7 +66,7 @@ private final class NoUpdateRedirects: NSObject, URLSessionTaskDelegate, @unchec
 }
 
 @MainActor final class AppUpdates: ObservableObject {
-    nonisolated static var installedVersion: String { Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "0.22.0" }
+    nonisolated static var installedVersion: String { Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "0.23.0" }
     @Published private(set) var automatic: Bool
     @Published private(set) var checking = false
     @Published private(set) var latest: NinoRelease?

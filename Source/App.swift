@@ -161,7 +161,7 @@ final class NinoPanel: NSPanel { override var canBecomeKey: Bool { true }; overr
             }
         } catch { store.error=error.localizedDescription }
     }
-    @objc func about() { NSApp.orderFrontStandardAboutPanel(options: [.applicationName: "Nino", .applicationVersion: AppUpdates.installedVersion, .credits: NSAttributedString(string: "Compagnon de travail local. SwiftUI · Whisper.cpp · FFmpeg · CodexBar.")]) }
+    @objc func about() { NSApp.orderFrontStandardAboutPanel(options: [.applicationName: "Nino", .applicationVersion: AppUpdates.installedVersion, .credits: NSAttributedString(string: "Compagnon de travail local. SwiftUI · Whisper.cpp · CodexBar.")]) }
     @objc func compactWindow() { mainWindow.setContentSize(NSSize(width:680,height:540));mainWindow.center();showMain() }
     @objc func comfortableWindow() { mainWindow.setContentSize(fittedWindowSize());mainWindow.center();showMain() }
     @objc func showMain() { mainWindow.makeKeyAndOrderFront(nil); NSApp.activate(ignoringOtherApps: true) }

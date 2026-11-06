@@ -122,7 +122,7 @@ enum VoicePermissionError: LocalizedError {
             phase = "Son du Mac"; refresh()
             if !screen { _ = CGRequestScreenCaptureAccess(); refresh() }
             if !screen { message = "Pour entendre les appels au casque, active Nino dans les réglages d’enregistrement de l’écran et des sons du système. macOS peut demander de rouvrir Nino." }
-            else if message == nil { message = "La voix est prête. L’écoute démarre uniquement lorsque tu lances une note vocale ou un appel." }
+            else if message == nil { message = "Les accès audio sont accordés. Le direct dépend aussi de la disponibilité de la reconnaissance locale Apple. L’écoute démarre uniquement lorsque tu lances une note vocale ou un appel." }
         } catch is CancellationError { if preparation == token { message = "Préparation annulée. Aucun enregistrement n’a démarré." } }
         catch { if preparation == token { message = error.localizedDescription } }
     }

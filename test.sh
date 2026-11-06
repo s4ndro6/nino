@@ -63,3 +63,7 @@ xcrun swiftc "${SWIFT_FLAGS[@]}" "$ROOT/Source/NinoPaths.swift" "$ROOT/Tests/Nin
 # No microphone/network: verified models, native audio conversion and playback recovery.
 xcrun swiftc "${SWIFT_FLAGS[@]}" "$ROOT/Source/Domain.swift" "$ROOT/Source/NinoPaths.swift" "$ROOT/Source/TranscriptionModel.swift" "$ROOT/Source/AudioPreparation.swift" "$ROOT/Source/AudioPlayback.swift" "$ROOT/Tests/VoicePipelineTests.swift" -o "$TEST_BUILD/voice-tests"
 "$TEST_BUILD/voice-tests"
+
+# Pure API contracts: synthetic credentials, no external request or Keychain mutation by default.
+xcrun swiftc "${SWIFT_FLAGS[@]}" "$ROOT/Source/Domain.swift" "$ROOT/Source/IntelligenceAPI.swift" "$ROOT/Tests/IntelligenceAPITests.swift" -o "$TEST_BUILD/intelligence-tests"
+"$TEST_BUILD/intelligence-tests"

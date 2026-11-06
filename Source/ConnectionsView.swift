@@ -14,6 +14,7 @@ struct ConnectionsView: View {
                     Text("Choisis ce que tu relies et ce que tu partages. Chaque accès a une utilité précise.").font(.system(size: 13)).foregroundStyle(.secondary)
                 }
                 ModelPreparationView(store: store, download: store.modelDownload)
+                IntelligenceConnectionView(settings: store.agent.settings)
                 MCPConnectionView(work: store.work)
                 Divider()
                 VStack(alignment: .leading, spacing: 12) {

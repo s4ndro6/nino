@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.23.0 — Une IA pour tes brouillons
+
+- Apple Intelligence par défaut ; OpenAI Responses et Claude Messages disponibles avec une clé API personnelle dans le Trousseau.
+- Vérification explicite des clés et liste des modèles ; aucun envoi automatique, aucun fallback cloud et aucun accès aux fichiers par l’IA.
+- Connexions ChatGPT/Codex et Claude Code identifiées séparément du moteur de réponses.
+- Préparer un résumé depuis une transcription, relire avant envoi, préserver un brief existant, convertir le résultat en post-it.
+- Raccourcis de préparation pour ticket, réponse, plan de montage et résumé/actions.
+- Clarifie les prérequis de transcription en direct Apple, indépendants du modèle Whisper.
+
+
 ## 0.22.0 — Voix prête sur un nouveau Mac
 
 - Moteur Whisper 1.9.5 autonome inclus, conversion AVFoundation : plus de dépendance Homebrew/FFmpeg pour transcrire.

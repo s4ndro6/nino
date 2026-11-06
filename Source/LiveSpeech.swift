@@ -22,7 +22,7 @@ final class LiveCallSpeech {
         try Task.checkCancellation()
         let locales = ["fr":"fr-FR", "en":"en-US", "it":"it-IT", "es":"es-ES", "de":"de-DE"]
         guard let recognizer = SFSpeechRecognizer(locale: Locale(identifier: locales[language] ?? language)), recognizer.supportsOnDeviceRecognition, recognizer.isAvailable else {
-            throw NinoError("Reconnaissance locale indisponible pour cette langue. Aucun audio ne sera envoyé au cloud ; Whisper reste disponible après l’appel.")
+            throw NinoError("Reconnaissance locale indisponible pour cette langue. Aucun audio ne sera envoyé au cloud ; l’enregistrement peut continuer. Pour le transcrire ensuite, prépare un modèle Whisper dans Connexions.")
         }
         return recognizer
     }

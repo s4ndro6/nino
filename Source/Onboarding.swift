@@ -120,6 +120,7 @@ struct OnboardingView: View {
     private var connections:some View {
         VStack(alignment:.leading,spacing:18) {
             ModelPreparationView(store: store, download: store.modelDownload)
+            DisclosureGroup("Choisir une IA pour mes brouillons (facultatif)") { IntelligenceConnectionView(settings: store.agent.settings) }
             GoogleConnectionsView(account:store.google)
             DisclosureGroup("Codex et Claude · outils de développement") { SetupConnectionsView(setup:setup).padding(.top,12) }.font(.system(size:12))
             DisclosureGroup("Autorisations audio · facultatives") { VoicePermissionsView().padding(.top,12) }.font(.system(size:12))

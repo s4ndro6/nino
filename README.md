@@ -7,10 +7,10 @@
 Un post-it à garder sous les yeux. Le fil de ton projet. Une pause pour te concentrer.<br>
 Nino s’installe dans l’encoche de ton Mac et accompagne ta journée, à ton rythme.
 
-[![Télécharger Nino pour Mac](docs/assets/download.svg)](https://github.com/s4ndro6/nino/releases/download/v0.22.0/Nino-0.22.0-macOS-arm64.dmg)
+[![Télécharger Nino pour Mac](docs/assets/download.svg)](https://github.com/s4ndro6/nino/releases/download/v0.23.0/Nino-0.23.0-macOS-arm64.dmg)
 
 **Apple Silicon · macOS 15 ou plus · gratuit · MIT**<br>
-Version 0.22.0 — alpha publique, non notariée par Apple.
+Version 0.23.0 — alpha publique, non notariée par Apple.
 
 [Le site Nino](https://nino-companion.vercel.app) · [Installation](#en-trois-gestes) · [Ce que tu peux faire](#ton-petit-coin-de-bureau) · [Contribuer](CONTRIBUTING.md) · [Signaler un problème](https://github.com/s4ndro6/nino/issues)
 
@@ -18,9 +18,17 @@ Version 0.22.0 — alpha publique, non notariée par Apple.
 
 </div>
 
+## Ton IA, à ton choix
+
+Dans **Connexions → Une IA pour tes brouillons** : Apple Intelligence local, ou **OpenAI / Claude avec ta propre clé API**. Enregistre la clé dans le Trousseau, vérifie-la, choisis un modèle de texte, puis ouvre **Assistant**. Seul le texte visible est envoyé quand tu cliques. La facturation API est distincte des abonnements ChatGPT et Claude.
+
+Dans un document transcrit : **Résumé → Préparer un résumé avec mon IA…** ouvre le texte pour relecture avant envoi. Un brief déjà saisi est conservé jusqu’à ton choix de le remplacer. Le résultat peut devenir un post-it. Des points de départ sont proposés pour les tickets, le montage et les réponses.
+
+**Connecter ChatGPT via Codex / Connecter Claude Code** lance la connexion des outils officiels installés, pour leur suivi et les quotas. Cela ne transforme pas un abonnement en clé API de l’assistant. [Guide des connexions et limites](docs/INTELLIGENCE.md).
+
 ## En trois gestes
 
-1. **[Télécharge le DMG](https://github.com/s4ndro6/nino/releases/download/v0.22.0/Nino-0.22.0-macOS-arm64.dmg)** et ouvre-le.
+1. **[Télécharge le DMG](https://github.com/s4ndro6/nino/releases/download/v0.23.0/Nino-0.23.0-macOS-arm64.dmg)** et ouvre-le.
 2. **Glisse Nino dans Applications**, puis éjecte le disque Nino.
 3. **Ouvre Nino depuis Applications.** Choisis ton profil, ou commence directement avec une note.
 
@@ -39,7 +47,7 @@ Cette autorisation concerne Nino uniquement. Si macOS signale un logiciel malvei
 
 [Guide complet à garder sous la main](docs/PREMIER-LANCEMENT.txt) · Aucune commande Terminal ni désactivation globale de Gatekeeper.
 
-Les sommes SHA-256 sont jointes à la [release](https://github.com/s4ndro6/nino/releases/tag/v0.22.0). Déplace l’app avant de configurer le MCP : son chemin doit rester stable.
+Les sommes SHA-256 sont jointes à la [release](https://github.com/s4ndro6/nino/releases/tag/v0.23.0). Déplace l’app avant de configurer le MCP : son chemin doit rester stable.
 
 **Nouveau en 0.21 :** installation des mises à jour depuis Nino, avec téléchargement signé, confirmation et relance. Une dernière installation manuelle est nécessaire depuis les versions 0.20 et antérieures.
 
@@ -80,7 +88,8 @@ Les modèles s’adaptent à ton profil. **Nino ne pilote pas directement Photos
 | Quota Claude / Claude Code | Nécessite Claude Code connecté et le helper CodexBar facultatif. [Installation des options](docs/INSTALLATION.md). |
 | Capture micro et son du Mac | Autorisations macOS distinctes ; enregistrement lancé explicitement. Aucun consentement micro ne valide les autres accès. |
 | Transcription finale d’un média ou d’un enregistrement | Moteur Whisper inclus. Modèle multilingue à télécharger au choix dans Nino (78 ou 148 Mo), ou à importer. Aucun Homebrew nécessaire. [Préparer la transcription](docs/INSTALLATION.md#transcription-locale). |
-| Assistant et réponses en direct | Apple Intelligence disponible et activée, macOS 26 ou plus ; reconnaissance vocale autorisée pour le direct. Les réponses restent à vérifier. |
+| Assistant de brouillons | Apple Intelligence sur macOS 26+, ou clé API OpenAI/Claude et modèle compatible. |
+| Réponses en direct | Apple Intelligence disponible et activée, macOS 26+ ; reconnaissance locale Apple disponible et autorisée. Les réponses restent à vérifier. |
 | Google / Gmail | **Non activés dans le téléchargement public.** Le code du connecteur est fourni ; sa configuration éditeur et sa validation publique restent à finaliser. Aucun compte Google n’est requis pour essayer Nino. |
 | Touch Bar | Extension MTMR facultative, configuration manuelle. [Guide Touch Bar](TouchBar/README.md). |
 
