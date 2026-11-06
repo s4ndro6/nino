@@ -37,6 +37,12 @@ swift build "${SPM_FLAGS[@]}"
 BINARY_ROOT="$(swift build "${SPM_FLAGS[@]}" --show-bin-path)"
 cp -X "$BINARY_ROOT/Nino" "$APP_ROOT/Contents/MacOS/Nino"
 /usr/bin/strip -S "$APP_ROOT/Contents/MacOS/Nino"
+# Portable Whisper CLI, compiled from pinned upstream source with only macOS dependencies.
+WHISPER_ROOT="${NINO_WHISPER_BUILD_ROOT:-$BUILD_ROOT/Whisper}"
+bash "$PROJECT_ROOT/scripts/build-whisper-runtime.sh" "$WHISPER_ROOT"
+cp -X "$WHISPER_ROOT/static-build/bin/whisper-cli" "$APP_ROOT/Contents/MacOS/whisper-cli"
+/usr/bin/strip -S "$APP_ROOT/Contents/MacOS/whisper-cli"
+codesign "${SIGNING_FLAGS[@]}" "$APP_ROOT/Contents/MacOS/whisper-cli"
 # Native MCP helper: Foundation only, no Python/Node runtime needed for users.
 xcrun swiftc -parse-as-library -swift-version 5 -target arm64-apple-macosx15.0 -module-cache-path "$BUILD_ROOT/Cache/Swift" "$PROJECT_ROOT/MCP/Server.swift" -o "$APP_ROOT/Contents/MacOS/nino-mcp"
 codesign "${SIGNING_FLAGS[@]}" "$APP_ROOT/Contents/MacOS/nino-mcp"
@@ -76,6 +82,7 @@ cp -X "$SOURCE_ROOT/Nino.icns" "$APP_ROOT/Contents/Resources/Nino.icns"
 mkdir -p "$APP_ROOT/Contents/Resources/Licenses"
 cp -X "$PROJECT_ROOT/LICENSE" "$APP_ROOT/Contents/Resources/Licenses/Nino-MIT.txt"
 ditto --norsrc --noextattr --noacl "$PROJECT_ROOT/ThirdPartyLicenses" "$APP_ROOT/Contents/Resources/Licenses/ThirdParty"
+cp -X "$WHISPER_ROOT/WHISPER-LICENSE" "$APP_ROOT/Contents/Resources/Licenses/ThirdParty/Whisper.cpp-MIT.txt"
 # Publisher configuration is kept outside the public source tree. No user token is bundled.
 GOOGLE_CONFIG="${NINO_GOOGLE_CONFIG:-$PROJECT_ROOT/Configuration/GoogleDesktopOAuth.plist}"
 if [[ "${NINO_PUBLIC_BUILD:-0}" != "1" && -f "$GOOGLE_CONFIG" ]]; then

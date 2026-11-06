@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.22.0 — Voix prête sur un nouveau Mac
+
+- Moteur Whisper 1.9.5 autonome inclus, conversion AVFoundation : plus de dépendance Homebrew/FFmpeg pour transcrire.
+- Choix explicite du modèle local dans l’accueil et les réglages, progression, annulation, SHA-256 et récupération après téléchargement corrompu.
+- Enregistrer/importer et écouter sans modèle ; préparation guidée avant dictée ou transcription.
+- Lecteur audio rechargé après finalisation, durée, déplacement, fin de lecture et erreurs visibles.
+- Accès au dernier audio depuis l’encoche et protection des téléchargements pendant une mise à jour.
+
+
 ## 0.20.1 — Installation sur un autre Mac
 
 - Rend la neige accessible depuis Affichage → Neige sur le bureau, même dans le mode Livraison.

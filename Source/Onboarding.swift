@@ -119,9 +119,10 @@ struct OnboardingView: View {
     }
     private var connections:some View {
         VStack(alignment:.leading,spacing:18) {
+            ModelPreparationView(store: store, download: store.modelDownload)
             GoogleConnectionsView(account:store.google)
             DisclosureGroup("Codex et Claude · outils de développement") { SetupConnectionsView(setup:setup).padding(.top,12) }.font(.system(size:12))
-            DisclosureGroup("Préparer la voix · micro et transcription") { SetupCapabilitiesView(setup:setup,store:store).padding(.top,12) }.font(.system(size:12))
+            DisclosureGroup("Autorisations audio · facultatives") { VoicePermissionsView().padding(.top,12) }.font(.system(size:12))
             Text("Tout est facultatif. Aucun enregistrement ne démarre pendant la configuration.").font(.system(size:11)).foregroundStyle(.secondary)
         }
     }

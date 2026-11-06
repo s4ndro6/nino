@@ -54,6 +54,7 @@ import Combine
         if !CGPreflightScreenCaptureAccess() { _ = CGRequestScreenCaptureAccess() }
         if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_ScreenCapture") { NSWorkspace.shared.open(url) }
     }
+    var openVoiceSetup: (() -> Void)?
     var openPrompter: (() -> Void)?
     let assistant = CallAssistant()
     let agent = LocalAgent()
@@ -73,6 +74,9 @@ import Combine
     func selectDisplay(_ id: Int) { preferredDisplay=id;UserDefaults.standard.set(id,forKey:"preferredDisplay");onDisplayChange?() }
     let today = TodayStore()
     var openCallAssistant: (() -> Void)?
+    let modelDownload = TranscriptionModelDownload()
+    private var modelObservation: AnyCancellable?
+    @Published var lastAudioID: UUID?
     let runner = ProcessRunner()
     private var recordingStartTask: Task<Void, Never>?
     private var cancelledStart = false
@@ -118,6 +122,7 @@ import Combine
             guard let self else { return }
             self.attention.receive(event, projectTitle: self.work.current?.title ?? "Projet")
         }
+        modelObservation = modelDownload.objectWillChange.sink { [weak self] _ in self?.objectWillChange.send() }
         loadLibrary()
         if let storageIssue { error = storageIssue }
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
@@ -173,7 +178,15 @@ import Combine
         }
     }
     var modelURL: URL { root.appendingPathComponent("Models").appendingPathComponent(model) }
-    var modelReady: Bool { FileManager.default.fileExists(atPath: modelURL.path) }
+    var modelReady: Bool { model == URL(fileURLWithPath: model).lastPathComponent && TranscriptionRuntime.modelReady(modelURL) }
+    var transcriptionReady: Bool { modelReady && TranscriptionRuntime.ready }
+    var stopRecordingLabel: String { transcriptionReady ? "Arrêter et transcrire" : "Arrêter et enregistrer" }
+    func downloadModel(_ choice: LocalWhisperModel) {
+        guard canConfigure else { return }
+        modelDownload.start(choice, root: root) { [weak self] filename in
+            self?.model = filename; self?.saveSettings()
+        }
+    }
     var active: Document? { documents.first { $0.id == selected } }
     var filtered: [Document] { documents.filter { search.isEmpty || $0.title.localizedCaseInsensitiveContains(search) || $0.transcript.localizedCaseInsensitiveContains(search) } }
     var canConfigure: Bool { !copying && recordingID == nil && !isStarting && !isStopping && busyID == nil }
@@ -248,7 +261,8 @@ import Combine
             doc.sources = [AudioSource(filename: filename, label: "")]; doc.status = "À transcrire"
             try persist(doc); busyID = nil; copying = false
             analytics.track(.documentImported)
-            await transcribe(doc.id)
+            lastAudioID = doc.id
+            if transcriptionReady { await transcribe(doc.id) } else { notice = "Audio importé. Tu peux l’écouter et préparer la transcription plus tard." }
         } catch {
             busyID = nil; phase = ""; self.error = error.localizedDescription
             doc.status = "Erreur"; doc.error = error.localizedDescription
@@ -257,8 +271,9 @@ import Combine
     }
     func transcribe(_ id: UUID) async {
         guard busyID == nil, recordingID == nil, var doc = documents.first(where: { $0.id == id }) else { return }
-        guard modelReady else { error = "Le modèle local n’est pas disponible. Vérifie le dossier de stockage et les réglages."; return }
+        guard transcriptionReady else { notice = "Prépare la transcription locale pour convertir cet audio. Tu peux déjà l’écouter."; page = "connections"; openVoiceSetup?(); return }
         guard !doc.sources.isEmpty else { error = "Aucune source audio associée à ce document."; return }
+        let selectedModelURL = modelURL
         busyID = id; phase = "Préparation audio…"; runner.reset()
         defer { busyID = nil; phase = "" }
         do {
@@ -268,15 +283,17 @@ import Combine
                 try repository.checkMounted()
                 let original = try repository.sourceURL(source, in: doc)
                 let folder = repository.folder(doc.id)
-                let wav = folder.appendingPathComponent("prepared-\(index).wav")
+                let wav = folder.appendingPathComponent("prepared-\(UUID().uuidString).wav")
+                defer { try? FileManager.default.removeItem(at: wav) }
                 let log = folder.appendingPathComponent("engine-\(index).log")
                 phase = "Conversion · piste \(index + 1)/\(doc.sources.count)"
-                try await runner.run("/opt/homebrew/bin/ffmpeg", ["-nostdin", "-v", "error", "-y", "-protocol_whitelist", "file,pipe", "-i", original.path, "-vn", "-ar", "16000", "-ac", "1", "-c:a", "pcm_s16le", wav.path], log: log)
+                let conversionRunner = runner
+                try await Task.detached(priority: .userInitiated) { try await AudioPreparation.convert(original, to: wav) { try conversionRunner.checkCancellation() } }.value
                 phase = "Transcription locale · piste \(index + 1)/\(doc.sources.count)"
                 let prefix = folder.appendingPathComponent("whisper-\(index)").path
-                var args = ["-m", modelURL.path, "-f", wav.path, "-l", doc.language, "-oj", "-of", prefix, "-t", "4"]
+                var args = ["-m", selectedModelURL.path, "-f", wav.path, "-l", doc.language, "-oj", "-of", prefix, "-t", "4"]
                 if !useGPU { args.append("-ng") }
-                try await runner.run("/opt/homebrew/bin/whisper-cli", args, log: log)
+                try await runner.run(TranscriptionRuntime.executable.path, args, log: log)
                 lines += try WhisperJSON.parse(Data(contentsOf: URL(fileURLWithPath: prefix + ".json")), speaker: source.label, offset: source.offset)
                 // Only derived WAV is removed. Original recording and raw transcription are kept.
                 try? FileManager.default.removeItem(at: wav)
@@ -302,6 +319,7 @@ import Combine
     }
     func startRecording(call: Bool, dictation: Bool = false, fromNotch: Bool = false) async {
         guard canCapture else { return }
+        if dictation && !transcriptionReady { notice = "La dictée a besoin d’un modèle local. Télécharge-le ici, ou utilise Note vocale pour enregistrer sans modèle."; page = "connections"; openVoiceSetup?(); return }
         isStarting = true; cancelledStart = false
         let task = Task { await self.performRecordingStart(call: call, dictation: dictation, fromNotch: fromNotch) }
         recordingStartTask = task
@@ -399,7 +417,8 @@ import Combine
             recorder = nil; callCapture = nil; recordingID = nil; recordingStarted = nil; microphoneLevel = 0; isStopping = false
             edit(id) { $0.status = "À transcrire" }
             analytics.track(.recordingCompleted)
-            if autoTranscribe { await transcribe(id) }
+            lastAudioID = id; selected = id
+            if autoTranscribe && transcriptionReady { await transcribe(id) } else { notice = "Enregistrement conservé. Ouvre le document pour le réécouter ; la transcription peut être préparée plus tard." }
     }
     func export(_ id: UUID, format: ExportFormat) {
         guard let doc = documents.first(where: { $0.id == id }) else { return }

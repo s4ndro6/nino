@@ -100,7 +100,7 @@ struct NotchView: View {
                                 if let id = store.recordingID, store.documents.first(where: { $0.id == id })?.sources.contains(where: { $0.label == "Appel" }) == true {
                                     Button("Voir le direct", systemImage: "rectangle.topthird.inset.filled") { store.openCallAssistant?() }.buttonStyle(.bordered).help("Afficher les paroles et l’aide de Nino, sans modifier l’enregistrement")
                                 }
-                                Button(store.isStopping ? "Finalisation…" : "Arrêter et transcrire", systemImage: "stop.fill") { Task { await store.stopRecording() } }.buttonStyle(.borderedProminent).tint(.red).disabled(store.isStopping)
+                                Button(store.isStopping ? "Finalisation…" : store.stopRecordingLabel, systemImage: "stop.fill") { Task { await store.stopRecording() } }.buttonStyle(.borderedProminent).tint(.red).disabled(store.isStopping)
                             }
                         }.frame(height: 58)
                     } else if store.busyID != nil {
@@ -113,6 +113,14 @@ struct NotchView: View {
                                 Button("Détails") { open() }
                                 Button("Fermer") { store.error = nil }
                             }.font(.caption)
+                        }.frame(height: 58)
+                    } else if let id = store.lastAudioID, let doc = store.documents.first(where: { $0.id == id }), doc.segments.isEmpty {
+                        VStack(alignment: .leading, spacing: 5) {
+                            Text("Audio conservé · " + doc.title).font(.system(size: 11)).lineLimit(1)
+                            HStack {
+                                Button("Écouter l’enregistrement", systemImage: "play.fill") { store.selected = id; navigate("library") }
+                                if !store.transcriptionReady { Button("Préparer la voix") { navigate("connections") } }
+                            }.font(.system(size: 11)).foregroundStyle(ninoAccent)
                         }.frame(height: 58)
                     } else if let doc = store.latestTranscript {
                         VStack(alignment: .leading, spacing: 5) {

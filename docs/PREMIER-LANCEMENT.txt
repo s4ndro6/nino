@@ -16,6 +16,16 @@ Nino est une alpha non notariée : Apple peut demander une autorisation manuelle
    puis confirme « Ouvrir ». Ne communique ton mot de passe à personne.
 8. Choisis ton profil et essaie un post-it. Les connexions sont facultatives.
 
+TRANSCRIPTION ET NOTES VOCALES
+Dans les premiers réglages, tu peux télécharger un modèle local :
+Équilibré (148 Mo) ou Léger (78 Mo). Tu peux aussi choisir Plus tard.
+Pour le retrouver : Connexions → Transcription locale.
+Sans modèle, tu peux enregistrer et écouter une note vocale.
+Le modèle permet de transcrire les fichiers après enregistrement, hors ligne.
+La transcription en direct des appels dépend séparément de la reconnaissance
+vocale locale Apple et de ses autorisations ; elle n’est pas garantie par
+le téléchargement de Whisper. Aucun outil Terminal à installer.
+
 Cette autorisation vise Nino uniquement : ne désactive pas les protections
 macOS. Si le bouton n’apparaît pas, réessaie d’ouvrir Nino puis reviens dans
 ces réglages. Un Mac géré par une entreprise ou une école peut interdire

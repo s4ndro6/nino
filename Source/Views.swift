@@ -87,7 +87,7 @@ struct NinoRootView: View {
                 Divider().padding(.vertical,6)
                 compactNav("connections","Connexions","link")
                 compactNav("settings","Réglages","slider.horizontal.3")
-                if store.recordingID != nil { Button { Task { await store.stopRecording() } } label: { Image(systemName:"stop.circle.fill").foregroundStyle(.red).font(.system(size:24)) }.buttonStyle(.plain).help("Arrêter et transcrire").accessibilityLabel("Arrêter et transcrire").disabled(store.isStopping) }
+                if store.recordingID != nil { Button { Task { await store.stopRecording() } } label: { Image(systemName:"stop.circle.fill").foregroundStyle(.red).font(.system(size:24)) }.buttonStyle(.plain).help(store.stopRecordingLabel).accessibilityLabel(store.stopRecordingLabel).disabled(store.isStopping) }
             }.padding(.horizontal,8)
         }.background(Color.black.opacity(0.17))
     }
@@ -124,7 +124,7 @@ struct NinoRootView: View {
                 VStack(alignment: .leading, spacing: 10) {
                     HStack { Circle().fill(.red).frame(width: 6, height: 6); Text("ENREGISTREMENT").font(.system(size: 9, weight: .bold)).tracking(1) }
                     Text(started, style: .timer).font(.system(size: 26, weight: .light, design: .monospaced))
-                    Button("Arrêter et transcrire", systemImage: "stop.fill") { Task { await store.stopRecording() } }.disabled(store.isStopping)
+                    Button(store.stopRecordingLabel, systemImage: "stop.fill") { Task { await store.stopRecording() } }.disabled(store.isStopping)
                 }.padding(12).background(.red.opacity(0.08), in: RoundedRectangle(cornerRadius: 10))
             }
             Spacer()
@@ -196,8 +196,7 @@ struct DocumentView: View {
     @ObservedObject var store: NinoStore
     let id: UUID
     @NinoState private var tab = "text"
-    @NinoState private var player: AVPlayer?
-    @NinoState private var playing = false
+    @StateObject private var playback = AudioPlayback()
     @NinoState private var sourceID: UUID?
     var doc: Document? { store.documents.first { $0.id == id } }
     var body: some View {
@@ -213,13 +212,20 @@ struct DocumentView: View {
                     }
                     if !doc.sources.isEmpty {
                         HStack(spacing: 10) {
-                            Button { togglePlayback() } label: { Image(systemName: playing ? "pause.fill" : "play.fill") }.disabled(store.recordingID == id)
-                            Picker("Piste", selection: $sourceID) { ForEach(doc.sources) { source in Text(source.label.isEmpty ? "Audio original" : source.label).tag(Optional(source.id)) } }.labelsHidden().onChange(of: sourceID) { _, _ in loadPlayer() }
+                            Button { playback.toggle() } label: { Label(playback.playing ? "Pause" : "Écouter", systemImage: playback.playing ? "pause.fill" : "play.fill") }.disabled(!playback.ready || store.recordingID == id || store.isStopping)
+                            Picker("Piste", selection: Binding(get: { sourceID }, set: { sourceID = $0; loadPlayer() })) { ForEach(doc.sources) { source in Text(source.label.isEmpty ? "Audio original" : source.label).tag(Optional(source.id)) } }.labelsHidden()
                             Button { NSWorkspace.shared.open(store.repository.folder(id)) } label: { Image(systemName: "folder") }.help("Afficher les fichiers conservés")
                             Spacer()
-                            Button(doc.segments.isEmpty ? "Transcrire" : "Retranscrire") { Task { await store.transcribe(id) } }.disabled(store.busyID != nil || store.recordingID != nil)
+                            Button(!store.transcriptionReady ? "Préparer la transcription" : doc.segments.isEmpty ? "Transcrire" : "Retranscrire") { Task { await store.transcribe(id) } }.disabled(store.busyID != nil || store.recordingID != nil)
                         }
-                        if let player { VideoPlayer(player: player).frame(height: 54).clipShape(RoundedRectangle(cornerRadius: 6)) }
+                        if store.recordingID != id && !store.isStopping {
+                            HStack {
+                                Text(TranscriptExport.stamp(playback.position, separator: ".")).monospacedDigit()
+                                Slider(value: Binding(get: { playback.position }, set: { playback.seek($0) }), in: 0...max(1, playback.duration)).disabled(!playback.ready).accessibilityLabel("Position dans l’enregistrement")
+                                Text(TranscriptExport.stamp(playback.duration, separator: ".")).monospacedDigit()
+                            }.font(.caption)
+                            if let error = playback.error { Text(error).font(.caption).foregroundStyle(.orange) }
+                        }
                     }
                     if let message = doc.error { Text(message).font(.system(size: 12)).foregroundStyle(.orange).textSelection(.enabled) }
                     Picker("Contenu", selection: $tab) { Text("Transcription").tag("text"); Text("Notes").tag("notes"); Text("Résumé").tag("summary") }.pickerStyle(.segmented)
@@ -227,7 +233,7 @@ struct DocumentView: View {
                 Divider()
                 if tab == "text" {
                     if doc.segments.isEmpty {
-                        VStack(alignment: .leading, spacing: 12) { Image(systemName: "text.alignleft").font(.largeTitle).foregroundStyle(.secondary); Text(store.recordingID == id ? "À l’écoute…" : store.busyID == id ? "Le texte arrive ici." : "Ce document attend sa transcription.").font(.headline); Text("L’original reste conservé sur le X9.").foregroundStyle(.secondary) }.frame(maxWidth: .infinity, maxHeight: .infinity)
+                        VStack(alignment: .leading, spacing: 12) { Image(systemName: "text.alignleft").font(.largeTitle).foregroundStyle(.secondary); Text(store.recordingID == id ? "À l’écoute…" : store.busyID == id ? "Le texte arrive ici." : "Ce document attend sa transcription.").font(.headline); Text("L’audio original est conservé sur ton disque et peut être écouté sans transcription.").foregroundStyle(.secondary) }.frame(maxWidth: .infinity, maxHeight: .infinity)
                     } else {
                         ScrollView {
                             LazyVStack(alignment: .leading, spacing: 22) {
@@ -251,23 +257,31 @@ struct DocumentView: View {
                         TextEditor(text: Binding(get: { self.doc?.summary ?? "" }, set: { value in store.edit(id) { $0.summary = value } })).font(.system(size: 14)).scrollContentBackground(.hidden)
                     }.padding(20)
                 }
-            }.onAppear { sourceID = doc.sources.first?.id; loadPlayer() }.onChange(of: doc.sources.count) { _, _ in sourceID = doc.sources.first?.id; loadPlayer() }.onDisappear { player?.pause() }
+            }.onAppear { sourceID = doc.sources.first?.id; loadPlayer() }
+                .onChange(of: id) { _, _ in sourceID = self.doc?.sources.first?.id; loadPlayer() }
+                .onChange(of: doc.sources.map(\.id)) { _, _ in sourceID = doc.sources.first?.id; loadPlayer() }
+                .onChange(of: store.recordingID) { _, _ in loadPlayer() }
+                .onChange(of: store.isStarting) { _, _ in loadPlayer() }
+                .onChange(of: store.isStopping) { _, _ in loadPlayer() }
+                .onChange(of: doc.status) { previous, next in if [previous, next].contains("Enregistrement") || [previous, next].contains("Préparation") { loadPlayer() } }
+                .onDisappear { playback.pause() }
         }
     }
     func binding(_ segmentID: UUID, _ key: WritableKeyPath<Segment, String>) -> Binding<String> {
         Binding(get: { doc?.segments.first { $0.id == segmentID }?[keyPath: key] ?? "" }, set: { value in store.edit(id) { d in if let i = d.segments.firstIndex(where: { $0.id == segmentID }) { d.segments[i][keyPath: key] = value } } })
     }
     func loadPlayer() {
-        player?.pause(); playing = false
-        guard let doc, let source = doc.sources.first(where: { $0.id == sourceID }) ?? doc.sources.first, let url = try? store.repository.sourceURL(source, in: doc), FileManager.default.fileExists(atPath: url.path) else { player = nil; return }
-        player = AVPlayer(url: url)
+        guard let doc, store.recordingID != id, !store.isStarting, !store.isStopping,
+              doc.status != "Enregistrement", doc.status != "Préparation",
+              let source = doc.sources.first(where: { $0.id == sourceID }) ?? doc.sources.first else { playback.load(nil); return }
+        do { playback.load(try store.repository.sourceURL(source, in: doc)) }
+        catch { playback.load(nil); store.error = error.localizedDescription }
     }
-    func togglePlayback() { if player == nil { loadPlayer() }; if playing { player?.pause() } else { player?.play() }; playing.toggle() }
     func seek(_ segment: Segment) {
         guard let doc else { return }
         if let match = doc.sources.first(where: { $0.label == segment.speaker }), sourceID != match.id { sourceID = match.id; loadPlayer() }
         let offset = doc.sources.first(where: { $0.id == sourceID })?.offset ?? 0
-        player?.seek(to: CMTime(seconds: max(0, segment.start - offset), preferredTimescale: 600)); player?.play(); playing = true
+        playback.seek(max(0, segment.start - offset), play: true)
     }
 }
 
@@ -290,8 +304,9 @@ struct SettingsPage: View {
                 }
                 Section("Mises à jour") { AppUpdatesSettings(updates: store.updates) }
                 Section("Transcription") {
+                    ModelPreparationView(store: store, download: store.modelDownload)
                     Picker("Langue", selection: $store.language) { Text("Français").tag("fr"); Text("Détection automatique").tag("auto"); Text("Anglais").tag("en"); Text("Italien").tag("it"); Text("Espagnol").tag("es") }
-                    Picker("Modèle local", selection: $store.model) { Text("Whisper Small · multilingue").tag("ggml-small.bin"); Text("Whisper Base · léger (à fournir)").tag("ggml-base.bin"); Text("Whisper Large Turbo · qualité (à fournir)").tag("ggml-large-v3-turbo.bin") }
+                    Picker("Modèle local", selection: $store.model) { Text("Whisper Small · multilingue").tag("ggml-small.bin"); Text("Whisper Base · équilibré").tag("ggml-base.bin"); Text("Whisper Tiny · léger").tag("ggml-tiny.bin"); Text("Whisper Large Turbo · qualité (à fournir)").tag("ggml-large-v3-turbo.bin") }
                     Toggle("Accélération GPU Metal", isOn: $store.useGPU)
                     Label(store.modelReady ? "Modèle disponible" : "Modèle absent du dossier Models", systemImage: store.modelReady ? "checkmark.circle" : "exclamationmark.triangle").foregroundStyle(store.modelReady ? ninoAccent : .orange)
                 }

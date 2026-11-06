@@ -6,6 +6,7 @@ final class ProcessRunner: @unchecked Sendable {
     private var cancelled = false
     func reset() { lock.lock(); cancelled = false; lock.unlock() }
     func cancel() { lock.lock(); cancelled = true; let process = active; lock.unlock(); if process?.isRunning == true { process?.terminate() } }
+    func checkCancellation() throws { lock.lock(); let stopped = cancelled; lock.unlock(); if stopped { throw CancellationError() } }
     func run(_ executable: String, _ arguments: [String], log: URL) async throws {
         try await withCheckedThrowingContinuation { continuation in
             DispatchQueue.global(qos: .userInitiated).async {

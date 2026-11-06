@@ -13,6 +13,7 @@ struct ConnectionsView: View {
                     Text("Nino, avec tes outils.").font(.system(size: 30, weight: .semibold, design: .rounded)).tracking(-0.6)
                     Text("Choisis ce que tu relies et ce que tu partages. Chaque accès a une utilité précise.").font(.system(size: 13)).foregroundStyle(.secondary)
                 }
+                ModelPreparationView(store: store, download: store.modelDownload)
                 MCPConnectionView(work: store.work)
                 Divider()
                 VStack(alignment: .leading, spacing: 12) {
@@ -22,7 +23,7 @@ struct ConnectionsView: View {
                 }
                 Divider()
                 GoogleConnectionsView(account: store.google)
-                DisclosureGroup("Micro, transcription et stockage") { SetupCapabilitiesView(setup: setup, store: store).padding(.top, 16) }
+                DisclosureGroup("Micro, transcription et stockage") { SetupCapabilitiesView(showModel: false, setup: setup, store: store).padding(.top, 16) }
                 Text("Aucun serveur MCP tiers n’est exécuté automatiquement. Nino expose son propre connecteur ; il n’est pas encore un client MCP généraliste.").font(.caption).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
             }.padding(30).frame(maxWidth: 900, alignment: .leading).frame(maxWidth: .infinity)
         }

@@ -59,3 +59,7 @@ xcrun swiftc "${SWIFT_FLAGS[@]}" "$ROOT/Source/CompanionWalk.swift" "$ROOT/Tests
 # Installed storage must not follow the app bundle or recreate a missing portable volume.
 xcrun swiftc "${SWIFT_FLAGS[@]}" "$ROOT/Source/NinoPaths.swift" "$ROOT/Tests/NinoPathsTests.swift" -o "$TEST_BUILD/path-tests"
 "$TEST_BUILD/path-tests"
+
+# No microphone/network: verified models, native audio conversion and playback recovery.
+xcrun swiftc "${SWIFT_FLAGS[@]}" "$ROOT/Source/Domain.swift" "$ROOT/Source/NinoPaths.swift" "$ROOT/Source/TranscriptionModel.swift" "$ROOT/Source/AudioPreparation.swift" "$ROOT/Source/AudioPlayback.swift" "$ROOT/Tests/VoicePipelineTests.swift" -o "$TEST_BUILD/voice-tests"
+"$TEST_BUILD/voice-tests"

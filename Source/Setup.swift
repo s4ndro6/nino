@@ -49,7 +49,7 @@ import UniformTypeIdentifiers
         if let url=URL(string:link) { NSWorkspace.shared.open(url) }
     }
     func chooseModel(_ store: NinoStore) {
-        guard !copyingModel, store.canCapture else { return }
+        guard !copyingModel, !store.modelDownload.running, store.canCapture else { return }
         let panel=NSOpenPanel();panel.title="Choisir un modèle Whisper GGML";panel.allowedContentTypes=[UTType(filenameExtension:"bin") ?? .data];panel.canChooseDirectories=false
         guard panel.runModal() == .OK, let source=panel.url else { return }
         let destination=store.root.appendingPathComponent("Models").appendingPathComponent(source.lastPathComponent)
@@ -97,16 +97,17 @@ struct SetupConnectionsView: View {
 }
 
 struct SetupCapabilitiesView: View {
+    var showModel = true
     @ObservedObject var setup: SetupModel
     @ObservedObject var store: NinoStore
     var body: some View {
         VStack(alignment:.leading,spacing:14) {
             if store.libraryLoading { capability("Bibliothèque", "L’accès au dossier Documents attend une confirmation macOS.") { Button("Choisir le dossier…") { store.requestLibraryAccess() }.disabled(store.libraryAccessRequested) } }
+            if showModel { ModelPreparationView(store: store, download: store.modelDownload) }
+            DisclosureGroup("J’ai déjà un modèle Whisper .bin") {
+                Button(setup.copyingModel ? "Copie…" : "Choisir un modèle…") { setup.chooseModel(store) }.disabled(setup.copyingModel || store.modelDownload.running)
+            }.font(.caption)
             VoicePermissionsView()
-            capability("Transcription locale",store.modelReady ? "Modèle présent : \(store.model)" : "Choisis un modèle Whisper GGML .bin. Les modèles ne sont pas inclus dans les sources GitHub.") {
-                Button(setup.copyingModel ? "Copie…" : "Choisir un modèle…") { setup.chooseModel(store) }.disabled(setup.copyingModel)
-            }
-            Text("FFmpeg : \(!FileManager.default.isExecutableFile(atPath:"/opt/homebrew/bin/ffmpeg") ? "à installer" : "présent") · Whisper : \(!FileManager.default.isExecutableFile(atPath:"/opt/homebrew/bin/whisper-cli") ? "à installer" : "présent")").font(.system(size:11)).foregroundStyle(.secondary)
             Text("Tu peux tout passer : le minuteur, les documents et le prompteur manuel restent accessibles. Rien ne s’enregistre sans une action de ta part.").font(.system(size:12)).foregroundStyle(.secondary).fixedSize(horizontal:false,vertical:true)
             if let message=setup.message { Text(message).font(.caption).foregroundStyle(ninoAccent) }
         }
@@ -122,11 +123,11 @@ struct SetupPage: View {
     var body: some View {
         ScrollView { VStack(alignment:.leading,spacing:24) {
             Text("Connexions et préparation").font(.system(size:30,weight:.semibold))
+            SetupCapabilitiesView(setup:setup,store:store)
+            Divider()
             GoogleConnectionsView(account:store.google)
             Divider()
             SetupConnectionsView(setup:setup)
-            Divider()
-            SetupCapabilitiesView(setup:setup,store:store)
         }.padding(32) }
     }
 }

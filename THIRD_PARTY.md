@@ -3,8 +3,9 @@
 - CodexBarCLI 0.83.0 : https://github.com/steipete/CodexBar — projet MIT ; binaire optionnel téléchargé séparément. Ses notices de dépendances sont conservées dans `Helpers/THIRD_PARTY_NOTICES` par l’installateur. SHA-256 archive arm64 : `3fb6af9582a0b232dc1708e1d8f13985441dbe2e74903791c902d1fa8bb7c4a9`.
 - Codex CLI : https://github.com/openai/codex — installé séparément par l’utilisateur.
 - Claude Code : logiciel Anthropic installé séparément ; ses conditions et celles de l’abonnement s’appliquent.
-- Whisper.cpp : https://github.com/ggml-org/whisper.cpp — MIT, non inclus.
-- FFmpeg : https://ffmpeg.org — licence dépendante de la compilation (LGPL/GPL), non inclus.
+- Whisper.cpp : https://github.com/ggml-org/whisper.cpp — MIT, moteur 1.9.5 compilé statiquement et inclus dans l’app ; modèles facultatifs téléchargés séparément.
+- Conversion audio : AVFoundation, fourni par macOS. FFmpeg n’est plus nécessaire pour la transcription.
+- Modèles Whisper GGML : https://huggingface.co/ggerganov/whisper.cpp — MIT, révision et SHA-256 épinglés ; téléchargement explicite depuis Nino.
 - Frameworks Apple : fournis par macOS et le SDK Apple, non redistribués.
 
 Aucun média Koi, identifiant de compte, donnée personnelle ou modèle de transcription n’est inclus dans les sources.

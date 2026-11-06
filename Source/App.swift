@@ -71,6 +71,7 @@ final class NinoPanel: NSPanel { override var canBecomeKey: Bool { true }; overr
             UserDefaults.standard.set(enabled, forKey: "snowEnabled"); self?.snow.setEnabled(enabled)
             self?.snowMenuItem?.state = enabled ? .on : .off
         }
+        store.openVoiceSetup = { [weak self] in self?.showMain() }
         store.openPrompter = { [weak self] in self?.showPrompter() }
         NotificationCenter.default.addObserver(self, selector: #selector(screenChanged), name: NSApplication.didChangeScreenParametersNotification, object: nil)
         var type = EventTypeSpec(eventClass: OSType(kEventClassKeyboard), eventKind: UInt32(kEventHotKeyPressed))
@@ -230,7 +231,7 @@ final class NinoPanel: NSPanel { override var canBecomeKey: Bool { true }; overr
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool { showMain(); return true }
     var updateBlockingReason: String? {
         NativeUpdatePolicy.Work(recording: store.recordingID != nil, starting: store.isStarting,
-            stopping: store.isStopping, transcribing: store.busyID != nil, importing: store.copying,
+            stopping: store.isStopping, transcribing: store.busyID != nil, importing: store.copying || store.modelDownload.running,
             summarizing: store.summaryBusy, generating: store.agent.working || store.assistant.thinking || store.assistant.understanding,
             checkingDelivery: store.delivery.running, connecting: store.google.busy,
             savingWorkspace: store.work.saving, unsavedNotes: store.notes.hasUnsavedChanges).reason

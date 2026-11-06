@@ -26,15 +26,17 @@ Choisir un profil dans l’accueil ; les connexions sont facultatives. Créer un
 
 ## Transcription locale
 
-Cette option est séparée de l’installation de l’application. Les moteurs et les modèles ne sont pas intégrés au DMG.
+Depuis **0.22.0**, le moteur Whisper est intégré à Nino et macOS prépare l’audio. Pas de Terminal, Homebrew ou FFmpeg à installer.
 
-1. Installer FFmpeg et whisper.cpp via Homebrew si souhaité : `brew install ffmpeg whisper-cpp`.
-2. Vérifier que `/opt/homebrew/bin/ffmpeg` et `/opt/homebrew/bin/whisper-cli` existent. Cette alpha utilise ces chemins Apple Silicon.
-3. Télécharger un modèle GGML depuis la [documentation officielle whisper.cpp](https://github.com/ggml-org/whisper.cpp/tree/master/models). Le modèle `ggml-small.bin` multilingue est le choix initial ; sa taille est d’environ 466 Mo.
-4. Dans Nino → Connexions → Transcription locale → **Choisir un modèle…**, sélectionner le fichier `.bin`.
-5. Préparer les accès audio uniquement pour les fonctions souhaitées. macOS demande des accords distincts pour le micro, la reconnaissance et l’écran/audio système.
+1. Dans l’accueil, à l’étape **Tes outils**, ou dans **Connexions et préparation**, choisis **Télécharger le modèle** ou **Plus tard**.
+2. **Équilibré (148 Mo)** est le point de départ recommandé ; **Léger (78 Mo)** privilégie la vitesse. Les deux sont multilingues, dont le français. Nino télécharge depuis Hugging Face et vérifie le SHA-256 avant activation. Aucun téléchargement de modèle sans clic explicite.
+3. Le téléchargement affiche sa progression et peut être annulé. Un échec permet de réessayer. Un modèle existant corrompu est conservé sous un nom `.recovery-…` avant installation d’une copie valide. Les modèles restent dans la bibliothèque lors des mises à jour.
+4. Le choix **Plus tard** laisse les notes vocales enregistrables et écoutables. **Dicter** et **Transcrire** proposent la préparation si nécessaire. Les modèles déjà importés restent utilisables.
+5. Pour un essai : **Note vocale → autoriser le micro → enregistrer quelques secondes → Arrêter et enregistrer** (ou **Arrêter et transcrire** si prêt). Dans le document, **Écouter** relit l’original, même sans transcription. La barre de lecture permet de se déplacer.
 
-Importer un petit fichier d’essai avant un premier appel important. Le téléprompteur manuel ne dépend pas de Whisper. La transcription en direct utilise la reconnaissance locale Apple ; la transcription finale utilise Whisper.
+Les fichiers WAV, M4A, MP3, AAC, AIFF, CAF, FLAC et les pistes audio de MP4/MOV utilisent les décodeurs macOS ; pour un codec non reconnu, exporter une piste WAV ou M4A depuis le logiciel de montage. La vidéo seule sans piste audio ne peut pas être transcrite.
+
+Préparer les accès seulement pour les fonctions souhaitées. macOS demande des accords distincts pour le micro, la reconnaissance et l’écran/audio système. Aucun enregistrement n’est lancé pendant le téléchargement du modèle. La transcription finale fonctionne hors ligne après le téléchargement ; l’aide aux appels utilise séparément la reconnaissance locale Apple et Apple Intelligence si disponibles.
 
 ## Quotas Codex et Claude
 
